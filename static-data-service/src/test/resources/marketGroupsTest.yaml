@@ -1,0 +1,31 @@
+9:
+  descriptionID:
+    en: Equipment modules for spaceships, including many types of weapon, electronic,
+      engineering, armor, shield and propulsion systems
+    ru: 'Оборудование для кораблей: орудия, электроника, броня, щиты, различная аппаратура
+      и двигательные подсистемы. '
+  hasTypes: false
+  iconID: 1432
+  nameID:
+    en: Ship Equipment
+    ru: Оборудование кораблей
+712:
+  descriptionID:
+    en: Launcher bays designed to fire scan probes for stellar triangulation.
+    ru: Пусковые установки, предназначенные для запуска сканирующих зондов.
+  hasTypes: true
+  iconID: 2677
+  nameID:
+    en: Scan Probe Launchers
+    ru: Пусковые установки разведзондов
+  parentGroupID: 1708
+1708:
+  descriptionID:
+    en: Modules that give or improve scanning capabilities of spaceships
+    ru: Оборудование, необходимое для поиска сигналов в космосе
+  hasTypes: false
+  iconID: 107
+  nameID:
+    en: Scanning Equipment
+    ru: Поисковое оборудование
+  parentGroupID: 9

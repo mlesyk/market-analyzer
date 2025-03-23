@@ -1,0 +1,117 @@
+21591:
+  description:
+    de: Legierungen und Spezialmaterialien, die bei der Produktion von Modulen,
+      welche auf antiken Technologien beruhen, benötigt werden.
+    en: Alloys and special materials used in the manufacture of modules based
+      on Ancient technology.
+    fr: Alliages et matériaux spéciaux utilisés dans la production de modules
+      basés sur une technologie antique.
+    ja: 古代技術を使用してモジュールを製造する際に使われる合金および特殊マテリアル。
+    ru: Сплавы и специальные материалы, используемые в производстве модулей, основанных
+      на древней технологии.
+    zh: 基于远古科技在制造装备的时候使用的合金和特殊材料。
+  groupID: 530
+  iconID: 2888
+  marketGroupID: 1900
+  mass: 1.0
+  name:
+    de: Computer Chips
+    en: Computer Chips
+    fr: Puces d'ordinateur
+    ja: コンピュータチップ
+    ru: Computer Chips
+    zh: 电脑芯片
+  portionSize: 1
+  published: true
+  raceID: 4
+  volume: 0.1
+11540:
+  description:
+    de: '    Eine CPU-Komponente, die primär in Caldari-Schiffen eingesetzt wird,
+            aber auch Teil unzähliger anderer Technologien ist.'
+    en: 'CPU Component used primarily in Caldari ships. A component in various
+            other technology as well.    '
+    fr: 'Composant CPU utilisé principalement pour les vaisseaux caldari. Ce composant
+            est également utilisé dans diverses autres technologies.    '
+    ja: '    主にカルダリ船に用いられるCPU部品。他にも幅広い機械装置に使われている。'
+    ru: '    Компонент центрального процессора, используемый в основном на кораблях
+            Caldari. Применяется и в других различных технологиях.'
+    zh: '主要由加达里舰船使用的CPU构件。这个部件也存在于别的各种科技类型中。    '
+  groupID: 334
+  iconID: 2185
+  marketGroupID: 803
+  mass: 1.0
+  name:
+    de: Quantum Microprocessor
+    en: Quantum Microprocessor
+    fr: Microprocesseur quantique
+    ja: クアンタムマイクロプロセッサー
+    ru: Quantum Microprocessor
+    zh: 量子微处理器
+  portionSize: 1
+  published: true
+  raceID: 1
+  volume: 1.0
+4258:
+  basePrice: 6000
+  capacity: 0.8
+  description:
+    en: "Launcher for <a href=showinfo:30013>Core Scanner Probes</a>, which are
+            used to scan down Cosmic Signatures in space.\r\n\r\nNote: Only one probe
+            launcher can be fitted per ship.\r\n\r\n5% bonus to strength of scan probes."
+    ru: 'Пусковая установка, предназначенная для запуска <a href=showinfo:30013>зондов
+            навигационной разведки</a> — устройств, с помощью которых ведётся расчёт
+            координат различных скрытых сигналов.
+            Не допускается оснащение корабля сразу несколькими ПУ разведзондов.
+            При запуске разведзондов: чувствительность бортовой аппаратуры разведзондов
+            повышается на 5%.'
+  groupID: 481
+  iconID: 2677
+  marketGroupID: 712
+  metaGroupID: 2
+  name:
+    de: Core Probe Launcher II
+    en: Core Probe Launcher II
+    fr: Lanceur de sonde principal II
+    ja: コアプローブランチャーII
+    ru: Core Probe Launcher II
+    zh: 核心探针发射器 II
+  portionSize: 1
+  published: true
+  variationParentTypeID: 17938
+  volume: 5.0
+4260:
+  basePrice: 6000
+  capacity: 8.0
+  description:
+    en: "Launcher for <a href=showinfo:30013>Core Scanner Probes</a> and <a href=showinfo:30028>Combat
+            Scanner Probes</a>.\r\n\r\n<a href=showinfo:30013>Core Scanner Probes</a>
+            are used to scan down Cosmic Signatures in space.\r\n<a href=showinfo:30028>Combat
+            Scanner Probes</a> are used to scan down Cosmic Signatures, starships,
+            structures and drones.\r\n\r\nNote: Only one scan probe launcher can be
+            fitted per ship.\r\n\r\n5% bonus to strength of scan probes."
+    ru: 'Пусковая установка, предназначенная для запуска <a href=showinfo:30013>зондов
+            навигационной разведки</a> и <a href=showinfo:30028>боевых разведзондов</a>
+            <a href=showinfo:30013>Зонды навигационной разведки</a> применяются для
+            поиска (и получения точных координат) различных скрытых сигналов.
+            <a href=showinfo:30028>Боевые разведзонды</a> применяются для поиска (и
+            получения точных координат) скрытых сигналов, космических кораблей, стационарных
+            сооружений, дронов.
+            Не допускается оснащение корабля сразу несколькими ПУ разведзондов.
+            При запуске разведзондов: чувствительность бортовой аппаратуры разведзондов
+            повышается на 5%.'
+  groupID: 481
+  iconID: 2677
+  marketGroupID: 712
+  metaGroupID: 2
+  name:
+    de: Expanded Probe Launcher II
+    en: Expanded Probe Launcher II
+    fr: Lanceur de sonde étendu II
+    ja: 拡張型プローブランチャーII
+    ru: Expanded Probe Launcher II
+    zh: 延伸探针发射器 II
+  portionSize: 1
+  published: true
+  variationParentTypeID: 18639
+  volume: 5.0

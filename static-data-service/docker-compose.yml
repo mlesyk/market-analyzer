@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  postgresdb:
+    image: postgres:13
+    container_name: static-data-db-postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - static_data_db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=eve_static
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  eve-static-data:
+    build: .
+    ports:
+      - 8080:8080
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    environment:
+      - EVE_STATIC_DATA_PORT=8080
+      - DATABASE_HOSTNAME=postgresdb
+      - DATABASE_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+volumes:
+  static_data_db: {}
