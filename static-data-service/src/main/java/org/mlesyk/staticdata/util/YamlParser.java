@@ -52,36 +52,41 @@ public class YamlParser {
     }
 
     public Map<Integer, MarketGroupYamlDTO> parseMarketGroupsWithMarketItemsBound(InputStream inputStreamMarketGroupsData, InputStream inputStreamTypeIDsData) throws IOException {
-        Map<Integer, MarketGroupYamlDTO> marketItemGroupInfoMap = parseMarketItemGroups(inputStreamMarketGroupsData);
-        Map<Integer, MarketTypeYamlDTO> marketItemMap = parseMarketItems(inputStreamTypeIDsData);
-        for (Map.Entry<Integer, MarketTypeYamlDTO> entry : marketItemMap.entrySet()) {
-            MarketTypeYamlDTO item = entry.getValue();
-            Integer marketGroupID = item.getMarketGroupID();
-            if (marketGroupID != null) {
-                MarketGroupYamlDTO marketItemGroupInfo = marketItemGroupInfoMap.get(marketGroupID);
-                if (marketItemGroupInfo != null) {
-                    List<MarketTypeYamlDTO> typesOfMarketGroup = marketItemGroupInfo.getTypes();
-                    typesOfMarketGroup.add(item);
+        try (inputStreamMarketGroupsData; inputStreamTypeIDsData) {
+            Map<Integer, MarketGroupYamlDTO> marketItemGroupInfoMap = parseMarketItemGroups(inputStreamMarketGroupsData);
+            Map<Integer, MarketTypeYamlDTO> marketItemMap = parseMarketItems(inputStreamTypeIDsData);
+            for (Map.Entry<Integer, MarketTypeYamlDTO> entry : marketItemMap.entrySet()) {
+                MarketTypeYamlDTO item = entry.getValue();
+                Integer marketGroupID = item.getMarketGroupID();
+                if (marketGroupID != null) {
+                    MarketGroupYamlDTO marketItemGroupInfo = marketItemGroupInfoMap.get(marketGroupID);
+                    if (marketItemGroupInfo != null) {
+                        List<MarketTypeYamlDTO> typesOfMarketGroup = marketItemGroupInfo.getTypes();
+                        typesOfMarketGroup.add(item);
+                    }
                 }
             }
+            return marketItemGroupInfoMap;
         }
-        return marketItemGroupInfoMap;
     }
 
     public Map<Integer, UniverseSystemYamlDTO> readSolarSystemsFromYaml(Map<String, InputStream> zipEntryNameToYamlInputStream) throws IOException {
         Map<Integer, UniverseSystemYamlDTO> solarSystemMap = new HashMap<>();
 
         for (Map.Entry<String, InputStream> entry : zipEntryNameToYamlInputStream.entrySet()) {
-            UniverseSystemYamlDTO solarSystem = parseSingleObjectFromYaml(entry.getValue(), new TypeReference<UniverseSystemYamlDTO>() {
-            });
-            String zipEntryName = entry.getKey();
-            Matcher solarSystemDataMatcher = solarSystemPatternFromZipEntryName.matcher(zipEntryName);
-            if (solarSystemDataMatcher.find()) {
-                solarSystem.setSolarSystemName(solarSystemDataMatcher.group("solarSystemName"));
-                solarSystem.setConstellationName(solarSystemDataMatcher.group("constellationName"));
-                solarSystem.setRegionName(solarSystemDataMatcher.group("regionName"));
+            try (InputStream is = entry.getValue()) {
+                log.info("Reading {}", entry.getKey());
+                UniverseSystemYamlDTO solarSystem = parseSingleObjectFromYaml(entry.getValue(), new TypeReference<UniverseSystemYamlDTO>() {
+                });
+                String zipEntryName = entry.getKey();
+                Matcher solarSystemDataMatcher = solarSystemPatternFromZipEntryName.matcher(zipEntryName);
+                if (solarSystemDataMatcher.find()) {
+                    solarSystem.setSolarSystemName(solarSystemDataMatcher.group("solarSystemName"));
+                    solarSystem.setConstellationName(solarSystemDataMatcher.group("constellationName"));
+                    solarSystem.setRegionName(solarSystemDataMatcher.group("regionName"));
+                }
+                solarSystemMap.put(solarSystem.getSolarSystemID(), solarSystem);
             }
-            solarSystemMap.put(solarSystem.getSolarSystemID(), solarSystem);
         }
         return solarSystemMap;
     }

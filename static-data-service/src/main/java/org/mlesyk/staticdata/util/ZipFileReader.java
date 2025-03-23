@@ -24,26 +24,24 @@ public class ZipFileReader {
 
     public InputStream readEntityCollectionFromSingleFile(String fileName) throws IOException {
         File sdeFile = new File(sdeFilePath, sdeFileName);
-        try (ZipFile zipFile = new ZipFile(sdeFile)) {
-            Optional<? extends ZipEntry> zipEntryFromArchive = zipFile.stream().filter(e -> e.getName().endsWith(fileName)).findFirst();
-            if (zipEntryFromArchive.isPresent()) {
-                return zipFile.getInputStream(zipEntryFromArchive.get());
-            } else {
-                throw new IOException("File with name " + fileName + " was not found");
-            }
+        ZipFile zipFile = new ZipFile(sdeFile);
+        Optional<? extends ZipEntry> zipEntryFromArchive = zipFile.stream().filter(e -> e.getName().endsWith(fileName)).findFirst();
+        if (zipEntryFromArchive.isPresent()) {
+            return zipFile.getInputStream(zipEntryFromArchive.get());
+        } else {
+            throw new IOException("File with name " + fileName + " was not found");
         }
     }
 
     public Map<String, InputStream> readEntityCollectionSingleFilePerEntity(String fileName) throws IOException {
         File sdeFile = new File(sdeFilePath, sdeFileName);
-        try (ZipFile zipFile = new ZipFile(sdeFile)) {
-            return zipFile.stream().filter(e -> e.getName().endsWith(fileName)).collect(Collectors.toMap(ZipEntry::getName, zipEntry -> {
-                try {
-                    return zipFile.getInputStream(zipEntry);
-                } catch (IOException e) {
-                    throw new ZipFileReaderException("Error while reading zip file", e);
-                }
-            }));
-        }
+        ZipFile zipFile = new ZipFile(sdeFile);
+        return zipFile.stream().filter(e -> e.getName().endsWith(fileName)).collect(Collectors.toMap(ZipEntry::getName, zipEntry -> {
+            try {
+                return zipFile.getInputStream(zipEntry);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }));
     }
 }
