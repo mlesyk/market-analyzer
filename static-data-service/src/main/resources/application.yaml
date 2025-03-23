@@ -6,10 +6,10 @@ logging:
         eve: ${APP_LOG_LEVEL:INFO}
       springframework: ${SPRING_LOG_LEVEL:INFO}
 server:
-  port : ${EVE_STATIC_DATA_PORT:8080}
+  port : ${STATIC_DATA_PORT:8080}
 spring:
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOSTNAME:192.168.116.130}:${DATABASE_PORT:5432}/static_data
+    url: jdbc:postgresql://${DATABASE_HOSTNAME:172.25.141.246}:${DATABASE_PORT:5432}/static_data
     driverClassName: org.postgresql.Driver
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
@@ -20,12 +20,14 @@ spring:
       ddl-auto: update
     show-sql: ${HIBERNATE_SHOW_SQL_ENABLED:false}
 app:
+  snakeyaml:
+    maxYamlCodePoints: 1_000_000_000
   eve:
     sde:
       file_name: sde.zip
       file_path: ${SDE_FILE_PATH:./}
       resources_url: https://developers.eveonline.com/docs/services/sde/
       checksum_name: sde-checksum
-      type_id_filename: typeIDs.yaml
+      type_id_filename: types.yaml
       market_groups_filename: marketGroups.yaml
-      solar_systems_filename: solarsystem.staticdata
+      solar_systems_filename: solarsystem.yaml
