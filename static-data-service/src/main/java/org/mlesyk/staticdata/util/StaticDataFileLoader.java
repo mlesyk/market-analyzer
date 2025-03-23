@@ -22,16 +22,16 @@ public class StaticDataFileLoader {
 
     public static final String ABS_HREF = "abs:href";
 
-    @Value("${app.eve.sde.file_name}")
+    @Value("${app.sde.file_name}")
     private String sdeFileName;
 
-    @Value("${app.eve.sde.file_path}")
+    @Value("${app.sde.file_path}")
     private String sdeFilePath;
 
-    @Value("${app.eve.sde.checksum_name}")
+    @Value("${app.sde.checksum_name}")
     private String sdeChecksumURLText;
 
-    @Value("${app.eve.sde.resources_url}")
+    @Value("${app.sde.resources_url}")
     private String eveResourcesURL;
 
     public URI getSDEFileURL() throws IOException, URISyntaxException {

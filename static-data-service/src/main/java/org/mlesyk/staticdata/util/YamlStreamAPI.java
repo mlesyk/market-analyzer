@@ -10,13 +10,13 @@ import java.util.Map;
 
 @Component
 public class YamlStreamAPI {
-    @Value("${app.eve.sde.type_id_filename}")
+    @Value("${app.sde.type_id_filename}")
     private String typeIDsFileName;
 
-    @Value("${app.eve.sde.market_groups_filename}")
+    @Value("${app.sde.market_groups_filename}")
     private String marketGroupsFileName;
 
-    @Value("${app.eve.sde.solar_systems_filename}")
+    @Value("${app.sde.solar_systems_filename}")
     private String solarSystemFileName;
 
     private final ZipFileReader zipFileReader;

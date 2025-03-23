@@ -2,8 +2,7 @@ logging:
   level:
     root: ${ROOT_LOG_LEVEL:INFO}
     org:
-      mlesyk:
-        eve: ${APP_LOG_LEVEL:INFO}
+      mlesyk: ${APP_LOG_LEVEL:INFO}
       springframework: ${SPRING_LOG_LEVEL:INFO}
 server:
   port : ${STATIC_DATA_PORT:8080}
@@ -22,12 +21,11 @@ spring:
 app:
   snakeyaml:
     maxYamlCodePoints: 1_000_000_000
-  eve:
-    sde:
-      file_name: sde.zip
-      file_path: ${SDE_FILE_PATH:./}
-      resources_url: https://developers.eveonline.com/docs/services/sde/
-      checksum_name: sde-checksum
-      type_id_filename: types.yaml
-      market_groups_filename: marketGroups.yaml
-      solar_systems_filename: solarsystem.yaml
+  sde:
+    file_name: sde.zip
+    file_path: ${SDE_FILE_PATH:./}
+    resources_url: https://developers.eveonline.com/docs/services/sde/
+    checksum_name: sde-checksum
+    type_id_filename: types.yaml
+    market_groups_filename: marketGroups.yaml
+    solar_systems_filename: solarsystem.yaml

@@ -16,10 +16,10 @@ import java.util.zip.ZipFile;
 @Component
 public class ZipFileReader {
 
-    @Value("${app.eve.sde.file_name}")
+    @Value("${app.sde.file_name}")
     private String sdeFileName;
 
-    @Value("${app.eve.sde.file_path}")
+    @Value("${app.sde.file_path}")
     private String sdeFilePath;
 
     public InputStream readEntityCollectionFromSingleFile(String fileName) throws IOException {
