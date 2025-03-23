@@ -1,25 +1,27 @@
 package org.mlesyk.staticdata.mappers;
 
 import org.junit.jupiter.api.Test;
-import org.mlesyk.staticdata.config.BaseTestConfig;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mlesyk.staticdata.model.Item;
 import org.mlesyk.staticdata.model.ItemGroup;
 import org.mlesyk.staticdata.model.mappers.ItemGroupMapper;
+import org.mlesyk.staticdata.model.mappers.ItemGroupMapperImpl;
+import org.mlesyk.staticdata.model.mappers.ItemMapperImpl;
 import org.mlesyk.staticdata.model.rest.ItemGroupRestDTO;
 import org.mlesyk.staticdata.model.yaml.MarketGroupYamlDTO;
 import org.mlesyk.staticdata.model.yaml.MarketTypeYamlDTO;
 import org.mlesyk.staticdata.model.yaml.NameIDYamlDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@Import(BaseTestConfig.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {ItemGroupMapperImpl.class, ItemMapperImpl.class})
 class ItemGroupMapperTest {
 
     @Autowired

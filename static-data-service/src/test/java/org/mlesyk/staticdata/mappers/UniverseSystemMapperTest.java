@@ -1,19 +1,20 @@
 package org.mlesyk.staticdata.mappers;
 
 import org.junit.jupiter.api.Test;
-import org.mlesyk.staticdata.config.BaseTestConfig;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mlesyk.staticdata.model.UniverseSystem;
 import org.mlesyk.staticdata.model.mappers.UniverseSystemMapper;
+import org.mlesyk.staticdata.model.mappers.UniverseSystemMapperImpl;
 import org.mlesyk.staticdata.model.rest.UniverseSystemRestDTO;
 import org.mlesyk.staticdata.model.yaml.UniverseSystemYamlDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@Import(BaseTestConfig.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {UniverseSystemMapperImpl.class})
 class UniverseSystemMapperTest {
 
     @Autowired
