@@ -40,7 +40,7 @@ public class ZipFileReader {
             try {
                 return zipFile.getInputStream(zipEntry);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new ZipFileReaderException("Error reading file " + fileName, e);
             }
         }));
     }

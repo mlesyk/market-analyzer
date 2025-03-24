@@ -75,7 +75,6 @@ public class YamlParser {
 
         for (Map.Entry<String, InputStream> entry : zipEntryNameToYamlInputStream.entrySet()) {
             try (InputStream is = entry.getValue()) {
-                log.info("Reading {}", entry.getKey());
                 UniverseSystemYamlDTO solarSystem = parseSingleObjectFromYaml(entry.getValue(), new TypeReference<UniverseSystemYamlDTO>() {
                 });
                 String zipEntryName = entry.getKey();

@@ -1,0 +1,41 @@
+server:
+  port : ${MARKET_API_READER_PORT:8081}
+logging:
+  level:
+    root: ${ROOT_LOG_LEVEL:INFO}
+    org:
+      mlesyk: ${APP_LOG_LEVEL:INFO}
+      springframework: ${SPRING_LOG_LEVEL:INFO}
+spring:
+  profiles:
+    active: dev
+app:
+  market:
+    orders:
+      producer:
+        run_count: ${KAFKA_PRODUCER_RUN_COUNT:5}
+        kafka_orders_producer_pool_size: ${KAFKA_PRODUCER_POOL_SIZE:5}
+        kafka_orders_producer_queue_size: ${KAFKA_PRODUCER_QUEUE_SIZE:500}
+        scheduler_delay: ${KAFKA_PRODUCER_SCHEDULER_DELAY:300000}
+        scheduler_initial_delay: ${KAFKA_PRODUCER_SCHEDULER_INITIAL_DELAY:5000}
+        cache_life_minutes: ${KAFKA_PRODUCER_CACHE_LIFETIME_MINUTES:30}
+    api:
+      url: ${EVE_API_URL:https://esi.evetech.net/latest/}
+      types_path: ${MARKET_TYPE_ID_LIST_BY_REGION:markets/{region_id_path_param}/types/}
+      orders_path: ${MARKET_ORDERS_LIST_BY_REGION:markets/{region_id_path_param}/orders/}
+      statistics_path: ${MARKET_ORDERS_STATISTICS_BY_REGION:markets/{region_id_path_param}/history/}
+      regions_path: ${UNIVERSE_REGIONS:universe/regions/}
+      regions_info_path: ${UNIVERSE_REGION_INFO:universe/regions/{region_id_path_param}}
+      route_path: ${ROUTE_CALCULATOR:route/{origin_path_param}/{destination_path_param}/}
+  client:
+    static_data:
+      url: ${STATIC_DATA_URL:http://172.25.141.246:8084/}
+      types_path: ${TYPE_ID_LIST:getItemIds}
+  kafka:
+    hostname: ${KAFKA_HOSTNAME:172.25.141.246}
+    port: ${KAFKA_PORT:29092}
+    retention_ms: ${KAFKA_RETENTION:1800000}
+    topic:
+      orders: ${KAFKA_TOPIC_ORDERS:orders}
+      handler_orders_registry: ${KAFKA_TOPIC_HANDLER_ORDERS_REGISTRY:handler_orders_registry}
+      storage_orders_registry: ${KAFKA_TOPIC_STORAGE_ORDERS_REGISTRY:storage_orders_registry}
