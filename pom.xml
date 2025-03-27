@@ -30,6 +30,7 @@
         <module>static-data-service</module>
         <module>market-api-reader</module>
         <module>order-analyzer-service</module>
+        <module>profitable-orders-service</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

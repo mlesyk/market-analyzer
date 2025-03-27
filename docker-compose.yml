@@ -64,7 +64,25 @@ services:
       postgresdb:
         condition: service_healthy
     environment:
-      EVE_ORDERS_STORAGE_PORT: 8082
+      ORDERS_ANALYZER_PORT: 8082
+      DATABASE_HOSTNAME: postgresdb
+      DATABASE_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DATABASE_NAME: market_data
+  profitable-orders-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: profitable-orders-service
+    ports:
+      - 8085:8085
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    environment:
+      MARKET_API_READER_URL: http://market-api-reader:8081/
+      PROFITABLE_ORDERS_PORT: 8085
       DATABASE_HOSTNAME: postgresdb
       DATABASE_PORT: 5432
       DB_USERNAME: postgres
