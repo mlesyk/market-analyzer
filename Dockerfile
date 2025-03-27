@@ -14,3 +14,8 @@ FROM amazoncorretto:17 AS static-data-service
 WORKDIR /opt/app
 COPY --from=builder /opt/app/static-data-service/target/*.jar /opt/app/static-data-service.jar
 ENTRYPOINT ["java", "-jar", "/opt/app/static-data-service.jar" ]
+
+FROM amazoncorretto:17 AS order-analyzer-service
+WORKDIR /opt/app
+COPY --from=builder /opt/app/order-analyzer-service/target/*.jar /opt/app/order-analyzer-service.jar
+ENTRYPOINT ["java", "-jar", "/opt/app/order-analyzer-service.jar" ]
