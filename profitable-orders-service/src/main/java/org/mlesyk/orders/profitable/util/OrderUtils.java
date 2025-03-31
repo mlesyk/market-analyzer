@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,10 +76,14 @@ public class OrderUtils {
         } catch (HttpClientErrorException e) {
             log.info("marketTypeId is not found in staticData DB: {}", marketTypeId);
             return null;
+        } catch (RestClientException e) {
+            log.error("Error while extracting response for type MarketTypeRestDTO and content type [application/json]", e);
+            log.error("getItemStringById: " + staticDataClient.getItemStringById(marketTypeId));
+            throw e;
         }
         Integer marketItemID = profitableOrder.getMarketItemId();
         Integer marketGroupID = marketType.getGroupId();
-        String marketItemName = marketType.getName().getEn();
+        String marketItemName = marketType.getName();
         Long sellOrderId = profitableOrder.getSellOrderIdPK();
         Long buyOrderId = profitableOrder.getBuyOrderIdPK();
 

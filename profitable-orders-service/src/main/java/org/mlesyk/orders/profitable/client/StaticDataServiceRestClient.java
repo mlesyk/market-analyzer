@@ -53,6 +53,11 @@ public class StaticDataServiceRestClient {
         return restTemplate.getForObject(builder.build().toUriString(), MarketTypeRestDTO.class);
     }
 
+    public String getItemStringById(Integer id) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(staticDataURL + itemsListPath + "/" + id);
+        return restTemplate.getForObject(builder.build().toUriString(), String.class);
+    }
+
     public UniverseSystemRestDTO getUniverseSystemById(Integer systemID) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(staticDataURL + systemsListPath + "/" + systemID);
         return restTemplate.getForObject(builder.build().toUriString(), UniverseSystemRestDTO.class);

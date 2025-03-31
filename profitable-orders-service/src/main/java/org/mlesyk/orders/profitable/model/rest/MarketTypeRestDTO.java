@@ -11,7 +11,7 @@ import lombok.*;
 @ToString
 public class MarketTypeRestDTO {
     private Integer id;
-    private NameIDRestDTO name;
+    private String name;
     private Double volume;
     private Integer groupId;
 }
