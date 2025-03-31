@@ -123,7 +123,7 @@ public class ProfitableOrdersController {
         profitableOrdersView.addAll(orderUtils.fillProfitableOrdersViewDTO(newProfitableOrders, Collections.emptyList()));
         // delete orders which does not exist anymore
         profitableOrdersView = profitableOrdersView.stream().filter(orderView -> profitableOrders.stream().anyMatch(profitableOrder -> profitableOrder.getBuyOrderIdPK().equals(orderView.getBuyOrderId())
-                && profitableOrder.getSellOrderIdPK().equals(orderView.getSellOrderId()))).toList();
+                && profitableOrder.getSellOrderIdPK().equals(orderView.getSellOrderId()))).collect(Collectors.toList());
         log.info("ProfitableOrders view cache: {}", profitableOrdersView.stream().map(ProfitableOrdersViewDTO::getMarketItemID).toList());
     }
 }
