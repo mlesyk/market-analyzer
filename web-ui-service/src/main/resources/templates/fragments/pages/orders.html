@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="orders_page_fragment" class="row" id="orders_ft">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-12">
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <h5 class="card-header bg-light" data-bs-toggle="collapse" href="#collapseOrdersFilters"
+                        role="button" aria-expanded="true">Filters <i class="bi bi-filter"></i></h5>
+                    <div class="card-body collapse show" id="collapseOrdersFilters">
+                        <div th:replace="fragments/search/orders_search :: orders_search_fragment"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p></p>
+            </div>
+        </div>
+        <div th:if="${searchCriteria.active}">
+            <th:block th:switch="${searchCriteria.searchType}">
+                <th:block th:case="${T(org.mlesyk.ui.model.search.SearchType).RAW}">
+                    <div th:replace="~{fragments/pages/orders :: orders_refresh_buttons_fragment}"></div>
+                    <div class="col-12">
+                        <p></p>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <h5 class="card-header bg-light">Raw Orders</h5>
+                                <div class="card-body">
+                                    <div th:replace="fragments/tables/orders_table :: orders_table_fragment"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+                <th:block th:case="${T(org.mlesyk.ui.model.search.SearchType).GROUPED}">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <h5 class="card-header bg-light">Grouped By Item Name Orders</h5>
+                                <div class="card-body">
+                                    <div th:replace="fragments/tables/orders_table :: orders_grouped_table_fragment"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+                <th:block th:case="${T(org.mlesyk.ui.model.search.SearchType).RAW_DIRECT}">
+                    <div th:replace="fragments/pages/orders :: orders_refresh_buttons_fragment"></div>
+                    <div class="col-12">
+                        <p></p>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <h5 class="card-header bg-light">Raw Orders</h5>
+                                <div class="card-body">
+                                    <div th:replace="fragments/tables/orders_table :: orders_table_fragment"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+                <th:block th:case="${T(org.mlesyk.ui.model.search.SearchType).GROUPED_DIRECT}">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <h5 class="card-header bg-light">Grouped By Item Name Orders</h5>
+                                <div class="card-body">
+                                    <div th:replace="fragments/tables/orders_table :: orders_grouped_table_fragment"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+            </th:block>
+        </div>
+    </div>
+</div>
+<th:block th:fragment="orders_refresh_buttons_fragment">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <button class="btn btn-primary" id="start">Enable refresh</button>
+                                    <button class="btn btn-secondary" id="stop">Disable refresh</button>
+                                    <button class="btn btn-primary" id="runOnce">Refresh now</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+
+                                        <div class="col-4">
+                                            <h6 style="text-align:center;">Refresh Rate</h6>
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="range" class="form-range" min="10" max="60" step="10"
+                                                   id="refreshRate"
+                                                   onchange="changeInterval(this.value);" value="10">
+                                        </div>
+                                        <div class="col-2">
+                                            <input type="text" style="text-align:center;" readonly
+                                                   class="form-control-plaintext" id="staticRefreshRate" value="10">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        let nIntervId;
+
+        function scheduleUpdate() {
+            if (!nIntervId) {
+                $("#start").addClass("btn-success");
+                $("#start").removeClass("btn-primary");
+                $("#stop").addClass("btn-primary");
+                $("#stop").removeClass("btn-secondary");
+                var refreshRate = 1000 * document.getElementById('staticRefreshRate').value;
+                nIntervId = setInterval(updateTable, refreshRate);
+            }
+        }
+
+        function updateTable() {
+            var tableId = /*[['table_' + ${#strings.toLowerCase(searchCriteria.searchType.name())}]]*/ 'table_id';
+            $.post({
+                url: "/orders_table",
+                data: {tableId: tableId, '_csrf': $('meta[name="_csrf"]').attr('content')}
+            }).done(function (fragment) {
+                $("#" + tableId).replaceWith(fragment);
+                var newTableObject = document.getElementById(tableId)
+                sorttable.makeSortable(newTableObject);
+            });
+        }
+
+        function stopUpdate() {
+            $("#start").addClass("btn-primary");
+            $("#start").removeClass("btn-success");
+            $("#stop").addClass("btn-secondary");
+            $("#stop").removeClass("btn-primary");
+            clearInterval(nIntervId);
+            // release our intervalID from the variable
+            nIntervId = null;
+        }
+
+        function changeInterval(val) {
+            document.getElementById('staticRefreshRate').value = val;
+            if (nIntervId) {
+                clearInterval(nIntervId);
+                var newRefreshRate = 1000 * val;
+                nIntervId = null;
+                nIntervId = setInterval(updateTable, newRefreshRate);
+            }
+        }
+
+        document.getElementById("start").addEventListener("click", scheduleUpdate);
+        document.getElementById("stop").addEventListener("click", stopUpdate);
+        document.getElementById("runOnce").addEventListener("click", updateTable);
+        /*]]>*/
+    </script>
+</th:block>
+</body>

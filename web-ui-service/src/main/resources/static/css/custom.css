@@ -1,0 +1,63 @@
+.tableFixHead {
+    overflow: auto;
+    height: 100px;
+}
+
+.tableFixHead thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+form label {
+    font-size: 10px;
+}
+
+.text_header {
+    border-bottom: 1px solid #a2a9b1;
+    line-height: 1.4em;
+}
+
+body, html {
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 12px;
+}
+
+.nav-buttons {
+    margin: .1rem!important;
+}
+
+div.tools {
+    background-color: #fff;
+    border: 2px solid #555;
+    border-radius: 8px;
+    margin-bottom: .5em;
+    padding: 4px;
+    text-align: center;
+}
+
+div.tools_notice {
+    text-align: center;
+}
+
+img.tl {
+    border: 0;
+    height: auto;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    vertical-align: middle;
+}
+
+img.toollogomed {
+    width: 80px;
+}
+
+img.toollogosmall {
+    width: 40px;
+}
+
+img.toollogobig {
+    width: 120px;
+}

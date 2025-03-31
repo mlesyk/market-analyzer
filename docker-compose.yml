@@ -122,6 +122,29 @@ services:
       KAFKA_CLEANER_SCHEDULER_DELAY: 300000
       KAFKA_CLEANER_SCHEDULER_INITIAL_DELAY: 5000
       KAFKA_CLEANER_ENABLED: true
+  web-ui-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web-ui-service
+    ports:
+      - 8083:8083
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+      profitable-orders-service:
+        condition: service_started
+    environment:
+      WEB_UI_PORT: 8083
+      DATABASE_HOSTNAME: postgresdb
+      DATABASE_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DATABASE_NAME: market_data
+      ESI_REDIRECT_URL: http://172.25.141.246:8083/login/oauth2/code/eve
+      ORDERS_DATA_URL: http://profitable-orders-service:8085/
+    env_file:
+      - ./keys_env
   zookeeper:
     image: bitnami/zookeeper:3.9.3
     container_name: zookeeper-market

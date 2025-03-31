@@ -5,6 +5,7 @@ COPY ./static-data-service ./static-data-service
 COPY ./market-api-reader ./market-api-reader
 COPY ./profitable-orders-service ./profitable-orders-service
 COPY ./order-analyzer-service ./order-analyzer-service
+COPY ./web-ui-service ./web-ui-service
 RUN mvn clean package
 
 FROM amazoncorretto:17 AS market-api-reader
@@ -26,3 +27,8 @@ FROM amazoncorretto:17 AS order-analyzer-service
 WORKDIR /opt/app
 COPY --from=builder /opt/app/order-analyzer-service/target/*.jar /opt/app/order-analyzer-service.jar
 ENTRYPOINT ["java", "-jar", "/opt/app/order-analyzer-service.jar" ]
+
+FROM amazoncorretto:17 AS web-ui-service
+WORKDIR /opt/app
+COPY --from=builder /opt/app/web-ui-service/target/*.jar /opt/app/web-ui-service.jar
+ENTRYPOINT ["java", "-jar", "/opt/app/web-ui-service.jar" ]

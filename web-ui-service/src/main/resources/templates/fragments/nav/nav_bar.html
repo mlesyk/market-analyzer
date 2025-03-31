@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<div th:fragment="nav_bar_fragment">
+
+    <style>
+        .nav-background {
+            background-image: url("../img/header_v10.jpg");
+            background-size: cover;
+            /* Workaround for some mobile browsers */
+            min-height: 100%;
+        }
+    </style>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark nav-background">
+        <div class="container">
+            <a class="navbar-brand" href="/" th:text="${@websiteData.websiteNameText}">Market Analyzer</a>
+
+            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarHead" aria-controls="navbarHead" aria-expanded="false">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="navbar-collapse collapse" id="navbarHead" style="">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-md nav-buttons" role="button" aria-current="page" href="/orders/grouped">Orders grouped</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-md nav-buttons" role="button" href="/orders/raw">Orders raw</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-md nav-buttons" role="button" href="/profile">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-md nav-buttons" role="button" href="/about">About</a>
+                    </li>
+                </ul>
+                <div class="me-5">
+<!--                    Logged in as: <span sec:authentication="name"></span><br/>-->
+<!--                    Roles: <span sec:authentication="authorities"></span>-->
+                    <div sec:authorize="isAnonymous()">
+                        <a href="/oauth2/authorization/eve">
+                            <img src="../static/img/eve-sso-login-black-large.png" th:src="@{/img/eve_sso.png}" width="270"
+                                 height="45"/>
+                        </a>
+                    </div>
+                    <div sec:authorize="hasRole('USER')">
+
+                        <a href="/logout"
+                           onclick="event.preventDefault();
+                        document.getElementById('logout-form').submit();">Logout</a>
+                        <form id="logout-form" th:action="@{/logout}" method="POST"
+                              style="display: none;">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>

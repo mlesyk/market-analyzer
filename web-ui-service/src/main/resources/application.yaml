@@ -1,0 +1,49 @@
+logging:
+  level:
+    root: ${ROOT_LOG_LEVEL:INFO}
+    org:
+      mlesyk: ${APP_LOG_LEVEL:INFO}
+      springframework: ${SPRING_LOG_LEVEL:INFO}
+server:
+  port : ${WEB_UI_PORT:8083}
+spring:
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOSTNAME:172.25.141.246}:${DATABASE_PORT:5432}/${DATABASE_NAME:market_data}
+    driverClassName: org.postgresql.Driver
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  sql:
+    init:
+      mode: always
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    show-sql: ${HIBERNATE_SHOW_SQL_ENABLED:false}
+    open-in-view: false
+  security:
+    oauth2:
+      client:
+        registration:
+          eve:
+            provider: esi
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            redirect-uri: ${ESI_REDIRECT_URL:http://localhost:8083/login/oauth2/code/eve}
+        #            scope:
+        #              - esi-ui.write_waypoint.v1
+        provider:
+          esi:
+            authorization-uri: https://login.eveonline.com/v2/oauth/authorize
+            token-uri: https://login.eveonline.com/v2/oauth/token
+# App Properties
+app:
+  website_name_url: ${WEBSITE_NAME:somewebsitename.org}
+  website_name_text: ${WEBSITE_NAME:Market Analyzer}
+  years_active: ${YEARS_ACTIVE:2025}
+  client:
+    orders_data:
+      url: ${ORDERS_DATA_URL:http://localhost:8085/}
+      orders_path: ${ORDERS_PATH:orders}

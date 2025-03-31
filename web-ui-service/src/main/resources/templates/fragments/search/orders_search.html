@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="orders_search_fragment">
+    <div class="row">
+        <div class="col-12">
+            <form th:action="@{${searchCriteria.url}}" method="post" th:object="${searchCriteria}">
+                <div th:insert="~{fragments/search/search_form :: orders_search_form_fragment}"></div>
+            </form>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

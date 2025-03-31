@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="about_page_fragment" class="row" id="about">
+    <div class="col-1">
+    </div>
+    <div class="col-10">
+        <div class="card" id="ccp_copyright">
+            <h5 class="card-header bg-light">About</h5>
+            <div class="card-body">
+                <h4 class="text_header">
+                    Why
+                </h4>
+                <p>
+                    The core of this website was created a few years ago as CLI tool which helps to find profitable orders in EVE Online game.
+                    I am a software developer and my recent need was to remember technologies I knew but not practiced for a long time and learn something new.
+                    Information is remembered better when you apply it in the real project instead of abstract theory or exercises.
+                    Thus, to kill two birds with one stone, I've decided to create this website, with all the technologies I planned to practice.
+                </p>
+                <div class="row">
+                    <div class="col-12">
+                        <p></p>
+                    </div>
+                </div>
+                <h4 class="text_header">
+                    FYI
+                </h4>
+                <p>
+                    Integration using EVE Online Single Sign On (SSO) is optional and does not offer additional features for now.
+                    There are features in roadmap which will use SSO: private user search filters presets, search filters presets subscriptions for in-game notifications.
+                    These features are not implemented yet.
+                </p>
+                <div class="row">
+                    <div class="col-12">
+                        <p></p>
+                    </div>
+                </div>
+                <h4 class="text_header">
+                    Contact me
+                </h4>
+                <p>
+                    <i class="bi bi-google"></i> Email: <b>evetradeops@gmail.com</b>
+                </p>
+                <p>
+                    <i class="bi bi-linkedin"></i> Linkedin: <a href="https://www.linkedin.com/in/mlesyk/">Maksym Lesyk</a>
+                </p>
+                <p>
+                    <i class="bi bi-person-square"></i> In game character: <b>Trade Ops</b>
+                </p>
+                <div class="row">
+                    <div class="col-12">
+                        <p></p>
+                    </div>
+                </div>
+                <h4 class="text_header">
+                    Powered by
+                </h4>
+                <div class="tools">
+                    <a href="https://spring.io/projects/spring-boot" target="_blank" rel="noopener"><img alt="Spring Boot" title="Spring Boot" src="../static/img/spring-boot.png" th:src="@{/img/spring-boot.png}" height="42" width="80" class="toollogomed tl"></a>
+                    <a href="https://www.thymeleaf.org/" target="_blank" rel="noopener"><img alt="Thymeleaf" title="Thymeleaf" src="../static/img/thymeleaf.png" th:src="@{/img/thymeleaf.png}" height="42" width="40" class="toollogosmall tl"></a>
+                    <a href="https://getbootstrap.com/" target="_blank" rel="noopener"><img alt="Bootstrap" title="Bootstrap" src="../static/img/bootstrap.png" th:src="@{/img/bootstrap.png}" height="42" width="40" class="toollogosmall tl"></a>
+                    <a href="https://www.postgresql.org/" target="_blank" rel="noopener"><img alt="PostgreSQL" title="PostgreSQL" src="../static/img/postgresql.png" th:src="@{/img/postgresql.png}" height="42" width="40" class="toollogosmall tl"></a>
+                    <a href="https://www.docker.com/" target="_blank" rel="noopener"><img alt="Docker" title="Docker" src="../static/img/docker.png" th:src="@{/img/docker.png}" height="42" width="40" class="toollogosmall tl"></a>
+                    <a href="https://kubernetes.io/" target="_blank" rel="noopener"><img alt="Kubernetes" title="Kubernetes" src="../static/img/k8s.png" th:src="@{/img/k8s.png}" height="42" width="80" class="toollogomed tl"></a>
+                    <a href="https://kafka.apache.org/" target="_blank" rel="noopener"><img alt="Kafka" title="Kafka" src="../static/img/kafka.png" th:src="@{/img/kafka.png}" height="42" width="80" class="toollogomed tl"></a>
+                    <a href="https://www.jenkins.io/" target="_blank" rel="noopener"><img alt="Jenkins" title="Jenkins" src="../static/img/jenkins.png" th:src="@{/img/jenkins.png}" height="42" width="40" class="toollogosmall tl"></a>
+                    <a href="https://maven.apache.org/" target="_blank" rel="noopener"><img alt="Apache Maven" title="Apache Maven" src="../static/img/maven.svg" th:src="@{/img/maven.svg}" height="42" width="80" class="toollogomed tl"></a>
+                    <a href="https://www.oracle.com/cis/cloud/" target="_blank" rel="noopener"><img alt="Oracle cloud" title="Oracle cloud" src="../static/img/oracle.png" th:src="@{/img/oracle.png}" height="42" width="80" class="toollogomed tl"></a>
+                    <a href="https://aws.amazon.com/" target="_blank" rel="noopener"><img alt="AWS" title="AWS" src="../static/img/aws.svg" th:src="@{/img/aws.svg}" height="42" width="40" class="toollogosmall tl"></a>
+                </div>
+                <div class="tools_notice">
+                    All logos are copyright their respective owners. None of these companies are linked to nor do they endorse <span th:text="${@websiteData.websiteNameUrl}">websiteNameUrl</span>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <p></p>
+                    </div>
+                </div>
+                <h4 class="text_header">
+                    Legal
+                </h4>
+                <p>
+                    <span th:text="${@websiteData.websiteNameUrl}">websiteNameUrl</span> is © 2023 Maks Lesyk. All rights reserved.
+                </p>
+                <p>
+                <span th:text="${@websiteData.websiteNameUrl}">websiteNameUrl</span> uses cookies to store your orders search filters, quick-login encoded data and essential session key.
+                </p>
+                <p>
+                <span th:text="${@websiteData.websiteNameUrl}">websiteNameUrl</span> does not track your behaviour, publish your data or share your data with third parties.
+                </p>
+                <div class="row">
+                    <div class="col-12">
+                        <p></p>
+                    </div>
+                </div>
+                <h4 class="text_header">
+                    CCP Copyright Notice
+                </h4>
+                <p>
+                    EVE Online and the EVE logo are the registered trademarks of CCP hf. All rights are reserved
+                    worldwide. All other trademarks are the property of their respective owners. EVE Online, the EVE
+                    logo, EVE and all associated logos and designs are the intellectual property of CCP hf. All artwork,
+                    screenshots, characters, vehicles, storylines, world facts or other recognizable features of the
+                    intellectual property relating to these trademarks are likewise the intellectual property of CCP hf.
+                    CCP hf. has granted permission to <span th:text="${@websiteData.websiteNameUrl}">websiteNameUrl</span> to
+                    use EVE Online and all associated logos and designs for promotional and information purposes on its
+                    website but does not endorse, and is not in any way affiliated with, <span
+                        th:text="${@websiteData.websiteNameUrl}">websiteNameUrl</span>. CCP is in no way responsible for the
+                    content on or functioning of this website, nor can it be liable for any damage arising from the use
+                    of this website.
+                </p>
+                <div class="row">
+                    <div class="col-12">
+                        <p></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="col-1">
+    </div>
+</div>
+</body>

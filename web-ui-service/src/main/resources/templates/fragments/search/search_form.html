@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="orders_search_form_fragment">
+    <div class="row">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="marketItemName">Market Item Name</label>
+                        <input type="text" id="marketItemName" th:field="*{marketItemName}"
+                               class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="volume">Max Volume</label>
+                        <input type="number" id="volume" th:field="*{maxVolume}"
+                               class="form-control"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="profit">Min Profit</label>
+                                <input type="number" id="profit" th:field="*{minProfit}"
+                                       class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="profitPerCubicMeter">Min Profit/Cubic Meter</label>
+                                <input type="number" id="profitPerCubicMeter"
+                                       th:field="*{minProfitPerCubicMeter}"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="profitPerJumpSafe">Min Profit/Safe Jump</label>
+                                <input type="number" id="profitPerJumpSafe"
+                                       th:field="*{minProfitPerJumpSafe}"
+                                       class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="profitPerJumpShort">Min Profit/Short Jump</label>
+                                <input type="number" id="profitPerJumpShort"
+                                       th:field="*{minProfitPerJumpShort}"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="jumpsSafeNS">Max Null Sec Jumps</label>
+                                <input type="number" id="jumpsSafeNS"
+                                       th:field="*{maxJumpsSafeNS}"
+                                       class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="jumpsSafeLS">Max Low Sec Jumps</label>
+                                <input type="number" id="jumpsSafeLS"
+                                       th:field="*{maxJumpsSafeLS}"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="jumpsSafe">Max Jumps Safe Route</label>
+                                <input type="number" id="jumpsSafe" th:field="*{maxJumpsSafe}"
+                                       class="form-control"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="jumpsShort">Max Jumps Short Route</label>
+                                <input type="number" id="jumpsShort"
+                                       th:field="*{maxJumpsShort}"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block
+            th:if="${searchCriteria.searchType == T(org.mlesyk.ui.model.search.SearchType).RAW} OR ${searchCriteria.searchType == T(org.mlesyk.ui.model.search.SearchType).GROUPED}">
+        <div class="row">
+            <div class="col-12">
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch"
+                                           id="flexSwitchOrderSearchType"
+                                           th:checked="${searchCriteria.searchType == T(org.mlesyk.ui.model.search.SearchType).RAW}">
+                                    <label class="form-check-label" for="flexSwitchOrderSearchType">Enable raw data
+                                        output</label>
+                                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </th:block>
+    <input type="hidden" th:field="*{searchType}"
+           id="flexSwitchOrderSearchTypeValue">
+    <input type="hidden" th:field="*{url}">
+    <div class="row">
+        <div class="col-12">
+            <p></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a class="btn btn-secondary"
+               th:href="${searchCriteria.url + '?reset=true&type=' + searchCriteria.searchType.name()}"
+               role="button">Reset</a>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

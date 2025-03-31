@@ -1,0 +1,6 @@
+<th scope="col" role="button" title="Click to sort" class="header_sortable" th:fragment="sorting(field, label, type)"
+    th:attr="header-name=${field},sort-direction=${sortColumn == field ? reverseSortDirection : sortDirection}">
+    <span th:utext="${label}"></span>
+    <i th:if="${sortColumn == field}"
+          th:class="${sortDirection == 'asc' ? (type=='num' ? 'bi bi-sort-numeric-down' : 'bi bi-sort-alpha-down' ) : (type=='num' ? 'bi bi-sort-numeric-down-alt' : 'bi bi-sort-alpha-down-alt' )}"></i>
+</th>

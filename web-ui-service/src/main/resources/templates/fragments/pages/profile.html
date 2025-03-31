@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<div th:fragment="profile_page_fragment" class="row" id="profile">
+    <div class="col-1">
+    </div>
+    <div class="col-10">
+        <div class="card">
+            <h5 class="card-header bg-light">Profile</h5>
+            <div class="card-body">
+                <div sec:authorize="isAnonymous()">
+                    <div class="row mt-4 ms-4 me-4">
+                        <div class="col-4">
+                            <div class="card" aria-hidden="true">
+                                <img th:src="@{/img/portrait_incognito.jfif}"
+                                     alt="Portrait">
+                                <div class="card-body">
+                                    <h3 class="card-title placeholder" style="width: 65%;">
+                                    </h3>
+                                    <p class="card-text">
+                                        <span class="placeholder" style="width: 85%;"></span>
+                                        <span class="placeholder" style="width: 55%;"></span>
+                                        <span class="placeholder" style="width: 75%;"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <a href="/oauth2/authorization/eve">
+                                <img src="../static/img/eve-sso-login-black-large.png" th:src="@{/img/eve_sso.png}" width="270"
+                                     height="45"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div sec:authorize="hasRole('USER')">
+                    <img th:src="${user_portrait}"
+                         alt="Portrait">
+                    Logged user: <span sec:authentication="name"></span>
+                    Roles: <span sec:authentication="principal.authorities"></span>
+                    characterId: <span sec:authentication="principal.characterId"></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-1">
+    </div>
+</div>
+</body>

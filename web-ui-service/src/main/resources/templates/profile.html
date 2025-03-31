@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <div th:replace="fragments/general :: headerfiles_fragment"></div>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <p></p>
+        </div>
+    </div>
+    <div th:insert="~{fragments/nav/nav_bar :: nav_bar_fragment}"></div>
+    <div class="row">
+        <div class="col-12">
+            <p></p>
+        </div>
+    </div>
+    <div th:insert="~{fragments/pages/profile :: profile_page_fragment}"></div>
+</div>
+<div th:replace="~{fragments/general :: footer_fragment}"></div>
+<div th:replace="~{fragments/general :: scripts_fragment}"></div>
+</body>
+</html>
