@@ -52,7 +52,7 @@ services:
       KAFKA_PRODUCER_CACHE_LIFETIME_MINUTES: 5
       KAFKA_PRODUCER_SCHEDULER_DELAY: 300_000
       KAFKA_PRODUCER_SCHEDULER_INITIAL_DELAY: 5000
-      KAFKA_PRODUCER_RUN_COUNT: 5
+      KAFKA_PRODUCER_RUN_COUNT: 0
   order-analyzer-service:
     build:
       context: .
@@ -70,6 +70,22 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       DATABASE_NAME: market_data
+      KAFKA_HOSTNAME: kafka
+      KAFKA_PORT: 9092
+      ROOT_LOG_LEVEL: INFO
+      APP_LOG_LEVEL: INFO
+      SPRING_LOG_LEVEL: INFO
+      KAFKA_LOG_LEVEL: INFO
+      KAFKA_CONSUMER_POOL_SIZE: 5
+      KAFKA_CONSUMER_QUEUE_SIZE: 500
+      KAFKA_CLEANER_CACHE_LIFETIME_MINUTES: 5
+      KAFKA_CLEANER_REGISTRY_READ_TIME_SECONDS: 60
+      KAFKA_CLEANER_SCHEDULER_DELAY: 300000
+      KAFKA_CLEANER_SCHEDULER_INITIAL_DELAY: 900000
+      KAFKA_PRODUCER_SCHEDULER_DELAY: 300000
+      KAFKA_PRODUCER_SCHEDULER_INITIAL_DELAY: 5000
+      KAFKA_CLEANER_ENABLED: true
+      KAFKA_PRODUCER_POOL_SIZE: 5
   profitable-orders-service:
     build:
       context: .
@@ -80,7 +96,12 @@ services:
     depends_on:
       postgresdb:
         condition: service_healthy
+      kafka:
+        condition: service_started
+      static-data-service:
+        condition: service_healthy
     environment:
+      STATIC_DATA_URL: http://static-data-service:8084/
       MARKET_API_READER_URL: http://market-api-reader:8081/
       PROFITABLE_ORDERS_PORT: 8085
       DATABASE_HOSTNAME: postgresdb
@@ -88,6 +109,19 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       DATABASE_NAME: market_data
+      KAFKA_HOSTNAME: kafka
+      KAFKA_PORT: 9092
+      ROOT_LOG_LEVEL: INFO
+      APP_LOG_LEVEL: INFO
+      SPRING_LOG_LEVEL: INFO
+      KAFKA_LOG_LEVEL: INFO
+      KAFKA_CONSUMER_POOL_SIZE: 5
+      KAFKA_CONSUMER_QUEUE_SIZE: 500
+      KAFKA_CLEANER_CACHE_LIFETIME_MINUTES: 5
+      KAFKA_CLEANER_REGISTRY_READ_TIME_SECONDS: 60
+      KAFKA_CLEANER_SCHEDULER_DELAY: 300000
+      KAFKA_CLEANER_SCHEDULER_INITIAL_DELAY: 5000
+      KAFKA_CLEANER_ENABLED: true
   zookeeper:
     image: bitnami/zookeeper:3.9.3
     container_name: zookeeper-market

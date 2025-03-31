@@ -16,7 +16,7 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOSTNAME:192.168.116.129}:${DATABASE_PORT:5432}/${DATABASE_NAME:market_data}
+    url: jdbc:postgresql://${DATABASE_HOSTNAME:172.25.141.246}:${DATABASE_PORT:5432}/${DATABASE_NAME:market_data}
     driverClassName: org.postgresql.Driver
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
@@ -37,12 +37,12 @@ app:
     statistics_enabled: ${STATISTICS_ENABLED:false}
   client:
     static_data:
-      url: ${STATIC_DATA_URL:http://192.168.116.129:8084/}
+      url: ${STATIC_DATA_URL:http://172.25.141.246:8084/}
       types_path: ${TYPE_ID_LIST:getItems}
       systems_path: ${SYSTEMS_LIST:getSystems}
       type_name_to_id_path: ${TYPE_NAME_TO_ID:getItemNameToIdList}
     market_api_reader:
-      url: ${MARKET_API_READER_URL:http://192.168.116.129:8081/}
+      url: ${MARKET_API_READER_URL:http://172.25.141.246:8081/}
       route_path: ${ROUTE_PATH:route}
       statistics_path: ${STATISTICS_PATH:regions/{0}/orders/types/{1}/statistics}
     storage_service:
@@ -64,7 +64,7 @@ app:
       scheduler_delay: ${KAFKA_CLEANER_SCHEDULER_DELAY:300000}
       scheduler_initial_delay: ${KAFKA_CLEANER_SCHEDULER_INITIAL_DELAY:5000}
   kafka:
-    hostname: ${KAFKA_HOSTNAME:192.168.116.129}
+    hostname: ${KAFKA_HOSTNAME:172.25.141.246}
     port: ${KAFKA_PORT:29092}
     retention_ms: ${KAFKA_RETENTION:1800000}
     backoff:

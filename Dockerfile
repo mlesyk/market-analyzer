@@ -3,6 +3,8 @@ WORKDIR /opt/app
 COPY ./pom.xml ./
 COPY ./static-data-service ./static-data-service
 COPY ./market-api-reader ./market-api-reader
+COPY ./profitable-orders-service ./profitable-orders-service
+COPY ./order-analyzer-service ./order-analyzer-service
 RUN mvn clean package
 
 FROM amazoncorretto:17 AS market-api-reader
