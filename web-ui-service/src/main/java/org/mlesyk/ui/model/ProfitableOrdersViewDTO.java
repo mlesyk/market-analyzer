@@ -36,6 +36,9 @@ public class ProfitableOrdersViewDTO {
     private Integer sellOrderRegionId;
     private Integer buyOrderRegionId;
 
+    private String sellOrderRegionName;
+    private String buyOrderRegionName;
+
     private Integer totalJumps;
     private Integer totalJumpsShortest;
     private Integer lowSecJumps;

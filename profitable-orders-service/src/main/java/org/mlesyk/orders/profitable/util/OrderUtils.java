@@ -137,6 +137,8 @@ public class OrderUtils {
                 .setTotalNetProfit(totalNetProfit)
                 .setSellOrderSystem(sellOrderSystem.getSystemName())
                 .setBuyOrderSystem(buyOrderSystem.getSystemName())
+                .setSellOrderRegionName(sellOrderSystem.getRegionName())
+                .setBuyOrderRegionName(buyOrderSystem.getRegionName())
                 .setBuyOrderRegionId(buyOrderRegionId)
                 .setSellOrderRegionId(sellOrderRegionId)
                 .setTotalJumps(totalJumpsSecure)

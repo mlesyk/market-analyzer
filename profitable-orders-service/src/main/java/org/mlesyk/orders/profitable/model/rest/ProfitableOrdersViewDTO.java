@@ -27,6 +27,9 @@ public class ProfitableOrdersViewDTO {
     private final Integer sellOrderRegionId;
     private final Integer buyOrderRegionId;
 
+    private final String sellOrderRegionName;
+    private final String buyOrderRegionName;
+
     private final Integer totalJumps;
     private final Integer totalJumpsShortest;
     private final Integer lowSecJumps;
@@ -50,6 +53,8 @@ public class ProfitableOrdersViewDTO {
         this.buyOrderSystem = b.buyOrderSystem;
         this.sellOrderRegionId = b.sellOrderRegionId;
         this.buyOrderRegionId = b.buyOrderRegionId;
+        this.sellOrderRegionName = b.sellOrderRegionName;
+        this.buyOrderRegionName = b.buyOrderRegionName;
         this.totalJumps = b.totalJumps;
         this.totalJumpsShortest = b.totalJumpsShortest;
         this.lowSecJumps = b.lowSecJumps;
@@ -78,6 +83,9 @@ public class ProfitableOrdersViewDTO {
 
         private String sellOrderSystem;
         private String buyOrderSystem;
+
+        private String sellOrderRegionName;
+        private String buyOrderRegionName;
 
         private Integer sellOrderRegionId;
         private Integer buyOrderRegionId;
@@ -177,8 +185,18 @@ public class ProfitableOrdersViewDTO {
             return this;
         }
 
-        public Builder setSellOrderRegionId(Integer sellOrderRegionId) {
+        public Builder setSellOrderRegionId(Integer sellOrderRegionName) {
             this.sellOrderRegionId = sellOrderRegionId;
+            return this;
+        }
+
+        public Builder setBuyOrderRegionName(String buyOrderRegionName) {
+            this.buyOrderRegionName = buyOrderRegionName;
+            return this;
+        }
+
+        public Builder setSellOrderRegionName(String sellOrderRegionName) {
+            this.sellOrderRegionName = sellOrderRegionName;
             return this;
         }
 
@@ -251,6 +269,14 @@ public class ProfitableOrdersViewDTO {
 
     public Integer getBuyOrderRegionId() {
         return buyOrderRegionId;
+    }
+
+    public String getSellOrderRegionName() {
+        return sellOrderRegionName;
+    }
+
+    public String getBuyOrderRegionName() {
+        return buyOrderRegionName;
     }
 
     public Integer getTotalJumps() {

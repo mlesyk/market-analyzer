@@ -24,10 +24,10 @@
             <td th:text="${orders.key.marketItemName}"></td>
             <td th:text="${orders.key.sellOrdersCount}"></td>
             <td th:text="${orders.key.buyOrdersCount}"></td>
-            <td th:text="${orders.key.maxProfit}"></td>
+            <td th:text="${#numbers.formatDecimal(orders.key.maxProfit, 0, 'COMMA', 0, 'POINT')}"></td>
             <td th:text="${orders.key.maxProfitPerCubicMeter}"></td>
-            <td th:text="${orders.key.maxProfitPerJumpSafe}"></td>
-            <td th:text="${orders.key.maxProfitPerJumpShort}"></td>
+            <td th:text="${#numbers.formatDecimal(orders.key.maxProfitPerJumpSafe, 0, 'COMMA', 0, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(orders.key.maxProfitPerJumpShort, 0, 'COMMA', 0, 'POINT')}"></td>
         </tr>
         <tr>
             <td colspan="8" style="padding: 0;">
@@ -52,18 +52,18 @@
                         </thead>
                         <tbody>
                         <tr th:each="order : ${orders.value}">
-                            <td th:text="${order.sellOrderSystem}"></td>
-                            <td th:text="${order.buyOrderSystem}"></td>
+                            <td th:text="${order.sellOrderRegionName} + ' (' + ${order.sellOrderSystem} + ')'"></td>
+                            <td th:text="${order.buyOrderRegionName} + ' (' + ${order.buyOrderSystem} + ')'"></td>
                             <td style="text-align:center;" th:text="${order.nullSecJumps}"></td>
                             <td style="text-align:center;" th:text="${order.lowSecJumps}"></td>
                             <td style="text-align:center;" th:text="${order.totalJumps}"></td>
                             <td style="text-align:center;" th:text="${order.totalJumpsShortest}"></td>
-                            <td th:text="${order.sellOrderPriceFormatted}"></td>
-                            <td th:text="${order.buyOrderPriceFormatted}"></td>
-                            <td th:text="${order.orderVolumeFormatted}"></td>
+                            <td th:text="${#numbers.formatDecimal(order.sellOrderPrice, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(order.buyOrderPrice, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(order.orderVolume, 0, 'COMMA', 0, 'POINT')}"></td>
                             <td th:text="${order.orderProfitPerCubicMeter}"></td>
-                            <td th:text="${order.profitPerJumpSafe}"></td>
-                            <td th:text="${order.profitPerJumpShort}"></td>
+                            <td th:text="${#numbers.formatDecimal(order.profitPerJumpSafe, 0, 'COMMA', 0, 'POINT')}"></td>
+                            <td th:text="${#numbers.formatDecimal(order.profitPerJumpShort, 0, 'COMMA', 0, 'POINT')}"></td>
                             <td th:text="${#numbers.formatDecimal(order.totalNetProfit, 0, 'COMMA', 0, 'POINT')}"></td>
                         </tr>
                         </tbody>
@@ -99,15 +99,15 @@
     <tbody>
     <tr th:each="order : ${orders}">
         <td th:text="${order.marketItemName}"></td>
-        <td th:text="${order.sellOrderSystem}"></td>
-        <td th:text="${order.buyOrderSystem}"></td>
+        <td th:text="${order.sellOrderRegionName} + ' (' + ${order.sellOrderSystem} + ')'"></td>
+        <td th:text="${order.buyOrderRegionName} + ' (' + ${order.buyOrderSystem} + ')'"></td>
         <td style="text-align:center;" th:text="${order.nullSecJumps}"></td>
         <td style="text-align:center;" th:text="${order.lowSecJumps}"></td>
         <td style="text-align:center;" th:text="${order.totalJumps}"></td>
         <td style="text-align:center;" th:text="${order.totalJumpsShortest}"></td>
-        <td th:text="${order.sellOrderPriceFormatted}"></td>
-        <td th:text="${order.buyOrderPriceFormatted}"></td>
-        <td th:text="${order.orderVolumeFormatted}"></td>
+        <td th:text="${#numbers.formatDecimal(order.sellOrderPrice, 0, 'COMMA', 0, 'POINT')}"></td>
+        <td th:text="${#numbers.formatDecimal(order.buyOrderPrice, 0, 'COMMA', 0, 'POINT')}"></td>
+        <td th:text="${#numbers.formatDecimal(order.orderVolume, 0, 'COMMA', 0, 'POINT')}"></td>
         <td th:text="${order.orderProfitPerCubicMeter}"></td>
         <td th:text="${order.profitPerJumpSafe}"></td>
         <td th:text="${order.profitPerJumpShort}"></td>
