@@ -13,9 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,9 +67,10 @@ class MarketOrdersServicePaginationTest {
                 System.out.println("Page property = " + page);
                 System.out.println("Page expected = " + pageExpected);
                 if (page > pageExpected) {
-                    throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-                } else {
                     return new ArrayList<MarketOrder>();
+                } else {
+                    MarketOrder order = new MarketOrder();
+                    return List.of(order);
                 }
             }
         });

@@ -60,7 +60,7 @@ public class MarketRestClient {
     public List<MarketOrder> getRegionOrderInfoList(Map<String, Object> params) {
         Integer regionId = (Integer) params.get("region_id_path_param");
         MarketOrder[] marketRegionOrders = retryableRequestHandler.getWithRetry(applyQueryParameters(apiURL + orderListByRegionPath, params), MarketOrder[].class, params);
-        if(marketRegionOrders != null) {
+        if(marketRegionOrders != null && marketRegionOrders.length > 0) {
             for (MarketOrder order : marketRegionOrders) {
                 order.setRegionId(regionId);
                 order.setOrderValue(order.getPrice() * order.getVolumeRemain());

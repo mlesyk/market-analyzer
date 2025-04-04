@@ -42,7 +42,7 @@ public class RetryableRequestHandler {
             } catch (HttpStatusCodeException e) {
                 if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
                     log.debug("404 Not Found for ESI client request, {}", uriVariables);
-                    throw e;
+                    return null;
                 }
                 log.warn("HTTP error during request: {}, {}", e.getMessage(), uriVariables);
             } catch (Exception e) {

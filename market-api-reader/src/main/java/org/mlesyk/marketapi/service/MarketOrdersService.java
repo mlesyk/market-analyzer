@@ -101,45 +101,48 @@ public class MarketOrdersService {
     public Set<MarketOrder> readOrderPagesFromRegion(Integer regionId, int startPage, int lastPage) {
         Set<MarketOrder> orders = new HashSet<>();
         Set<Integer> allItemIds = staticDataServiceRestClient.getAllItemIds();
-        boolean isLastPage = false;
         int page = startPage;
-        while (!isLastPage && page <= lastPage) {
+        while (page <= lastPage) {
             OrdersRestQueryBuilder regionOrderQueryBuilder = OrdersRestQueryBuilder.getInstance().setRegionId(regionId).setPage(page);
-            try {
-                List<MarketOrder> regionOrders = new ArrayList<>(marketRestClient.getRegionOrderInfoList(regionOrderQueryBuilder.build()));
-                log.debug("Read finished of orders page {} of region {}, found {} orders", page, regionId, regionOrders.size());
-
-                Iterator<MarketOrder> iterator = regionOrders.iterator();
-                while (iterator.hasNext()) {
-                    MarketOrder order = iterator.next();
-                    boolean typeIsCorrect = allItemIds.contains(order.getTypeId());
-                    if (!typeIsCorrect) {
-                        log.debug("Order has unknown type id, possibly item from server Serenity: {}", order);
-                        iterator.remove();
-                    }
-                }
-                orders.addAll(regionOrders);
-                page++;
-            } catch (HttpStatusCodeException e) {
-                isLastPage = true;
+            List<MarketOrder> regionOrders = new ArrayList<>(marketRestClient.getRegionOrderInfoList(regionOrderQueryBuilder.build()));
+            log.debug("Read finished of orders page {} of region {}, found {} orders", page, regionId, regionOrders.size());
+            if(regionOrders.isEmpty()) {
+                break;
             }
+            Iterator<MarketOrder> iterator = regionOrders.iterator();
+            while (iterator.hasNext()) {
+                MarketOrder order = iterator.next();
+                boolean typeIsCorrect = allItemIds.contains(order.getTypeId());
+                if (!typeIsCorrect) {
+                    log.debug("Order has unknown type id, possibly item from server Serenity: {}", order);
+                    iterator.remove();
+                }
+            }
+            orders.addAll(regionOrders);
+            page++;
         }
+        log.info("Finished reading orders of region {}, found {} orders, number of pages = {}", regionId, orders.size(), page);
         return orders;
     }
 
+    /**
+     * Finds the total number of pages of market orders for a given region.
+     * This method uses a recursive approach to determine the number of pages by
+     * querying the market orders and adjusting the page and step values based on
+     * the presence or absence of orders.
+     *
+     * @param page the current page number to query
+     * @param step the step size to adjust the page number
+     * @param regionId the ID of the region to query
+     * @return the total number of pages of market orders for the given region
+     */
     public Integer findRegionOrderPagesAmount(Integer page, Integer step, Integer regionId) {
-        try {
-            if (step < 10) {
-                return page + step;
-            }
-            OrdersRestQueryBuilder regionOrderQueryBuilder = OrdersRestQueryBuilder.getInstance().setRegionId(regionId).setPage(page);
-            marketRestClient.getRegionOrderInfoList(regionOrderQueryBuilder.build());
-            if (page.equals(step)) {
-                return findRegionOrderPagesAmount(page + step, step * 2, regionId);
-            } else {
-                return findRegionOrderPagesAmount(page + step / 2, step / 2, regionId);
-            }
-        } catch (HttpClientErrorException e) {
+        if (step < 10) {
+            return page + step;
+        }
+        OrdersRestQueryBuilder regionOrderQueryBuilder = OrdersRestQueryBuilder.getInstance().setRegionId(regionId).setPage(page);
+        List<MarketOrder> orders = marketRestClient.getRegionOrderInfoList(regionOrderQueryBuilder.build());
+        if (orders.isEmpty()) {
             if (page.equals(step)) {
                 if (page.equals(10)) {
                     return page;
@@ -147,6 +150,12 @@ public class MarketOrdersService {
                 return findRegionOrderPagesAmount(page - step / 4, step / 4, regionId);
             } else {
                 return findRegionOrderPagesAmount(page - step / 2, step / 2, regionId);
+            }
+        } else {
+            if (page.equals(step)) {
+                return findRegionOrderPagesAmount(page + step, step * 2, regionId);
+            } else {
+                return findRegionOrderPagesAmount(page + step / 2, step / 2, regionId);
             }
         }
     }

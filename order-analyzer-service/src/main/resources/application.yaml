@@ -48,7 +48,7 @@ app:
     sell_order_prise_threshold: ${SELL_PRISE_THRESHOLD:0.5}
     buy_order_prise_threshold: ${BUY_PRISE_THRESHOLD:1.5}
   kafka:
-    hostname: ${KAFKA_HOSTNAME:192.168.116.129}
+    hostname: ${KAFKA_HOSTNAME:172.25.141.246}
     port: ${KAFKA_PORT:29092}
     retention_ms: ${KAFKA_RETENTION:1800000}
     backoff:
