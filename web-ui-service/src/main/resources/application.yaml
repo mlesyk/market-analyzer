@@ -6,6 +6,9 @@ logging:
       springframework: ${SPRING_LOG_LEVEL:INFO}
 server:
   port : ${WEB_UI_PORT:8083}
+  servlet:
+    session:
+      timeout: 5m
 spring:
   datasource:
     url: jdbc:postgresql://${DATABASE_HOSTNAME:172.25.141.246}:${DATABASE_PORT:5432}/${DATABASE_NAME:market_data}

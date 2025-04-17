@@ -1,7 +1,10 @@
 package org.mlesyk.orders.profitable.model.rest;
 
+import lombok.ToString;
+
 import java.util.Date;
 
+@ToString
 public class ProfitableOrdersViewDTO {
 
     private final Integer marketItemID;
@@ -185,7 +188,7 @@ public class ProfitableOrdersViewDTO {
             return this;
         }
 
-        public Builder setSellOrderRegionId(Integer sellOrderRegionName) {
+        public Builder setSellOrderRegionId(Integer sellOrderRegionId) {
             this.sellOrderRegionId = sellOrderRegionId;
             return this;
         }

@@ -30,6 +30,8 @@ public class WebSecurityConfiguration {
                                 .userService(this.oAuth2UserService()) // Override Spring's built-in implementations for OAuth2UserService
                         )
                 )
+                .sessionManagement(session ->
+                        session.invalidSessionUrl("/").maximumSessions(1).expiredUrl("/"))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/orders_table").permitAll()

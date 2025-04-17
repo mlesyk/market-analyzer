@@ -143,6 +143,9 @@ services:
       DATABASE_NAME: market_data
       ESI_REDIRECT_URL: http://172.25.141.246:8083/login/oauth2/code/eve
       ORDERS_DATA_URL: http://profitable-orders-service:8085/
+      ROOT_LOG_LEVEL: INFO
+      APP_LOG_LEVEL: INFO
+      SPRING_LOG_LEVEL: DEBUG
     env_file:
       - ./keys_env
   zookeeper:
