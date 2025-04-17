@@ -151,7 +151,7 @@ public class OrderUtils {
 
     public Double calculateBuySellOrderPairProfit(Double sellOrderPrice, Integer sellOrderVolume, Double buyOrderPrice, Integer buyOrderVolume) {
         int transactionVolume = Math.min(sellOrderVolume, buyOrderVolume);
-        return (buyOrderPrice * (1.0 - taxCalculator.getSaleTax(0)) - sellOrderPrice) * transactionVolume;
+        return ((buyOrderPrice - sellOrderPrice) * transactionVolume) * (1.0 - taxCalculator.getSaleTax(5));
     }
 
     public List<MarketTypeNameToIdDTO> getMarketTypeNameToIdMapping() {
