@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    stages {
+        stage('Docker version') {
+            steps {
+                sh "echo $USER"
+                sh 'docker version'
+            }
+        }
+        stage('Delete workspace before build starts') {
+            steps {
+                echo 'Deleting workspace'
+                deleteDir()
+            }
+        }
+        stage('Checkout') {
+            steps {
+                git branch: "main",
+                credentialsId: 'build-creds',
+                url: 'https://github.com/mlesyk/market-analyzer.git'
+                sh "ls -la "
+                sh "pwd"
+            }
+        }
+        stage('Build docker image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'registry_password', usernameVariable: 'registry_username')]) {
+                    sh "cp deployment/docker/Dockerfile_run_jar ./Dockerfile"
+                    sh 'echo $registry_password | docker login --username $registry_username --password-stdin'
+                    sh "docker buildx build --builder=SpringBootBuild --platform linux/amd64,linux/arm64 --network host --tag $registry_username/market-app --push ."
+                }
+            }
+        }
+    }
+}

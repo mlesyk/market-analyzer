@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static-data
+  namespace: static-data-ns
+  labels:
+    app: static-data
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: static-data
+  template:
+    metadata:
+      labels:
+        app: static-data
+    spec:
+      nodeSelector:
+        node: "ora4"
+      imagePullSecrets:
+        - name: myregistrykey
+      containers:
+        - name: static-data
+          image: lesykm/market-app:latest
+          command: ["java", "-jar", "/opt/app/static-data-service.jar"]
+          env:
+            - name: SDE_FILE_PATH
+              value: /sde/
+            - name: STATIC_DATA_PORT
+              value: "8084"
+            - name: DATABASE_HOSTNAME
+              value: postgresdb-static-data-service
+            - name: DATABASE_PORT
+              value: "5432"
+            - name: DB_USERNAME
+              value: postgres
+            - name: DB_PASSWORD
+              value: postgres
+            - name: DATABASE_NAME
+              value: market_data
+            - name: ROOT_LOG_LEVEL
+              value: INFO
+            - name: APP_LOG_LEVEL
+              value: INFO
+            - name: SPRING_LOG_LEVEL
+              value: INFO
+          volumeMounts:
+            - name: sde-path
+              mountPath: /sde
+          ports:
+            - name: app-port
+              containerPort: 8084
+          readinessProbe:
+            httpGet:
+              path: /getItems/53375
+              port: app-port
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /getItems/53375
+              port: app-port
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /healthcheck
+              port: app-port
+            initialDelaySeconds: 30
+            failureThreshold: 50
+            periodSeconds: 10
+      volumes:
+        - name: sde-path
+          emptyDir: {}

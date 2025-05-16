@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: web-ui-ns
+  labels:
+    app: web-ui
+spec: {}
+status: {}

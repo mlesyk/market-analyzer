@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  postgresdb-static-data:
+    image: postgres:13
+    container_name: postgresdb-static-data
+    volumes:
+      - static_data_db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=market_data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  static-data-service:
+    image: lesykm/market-app:latest
+    container_name: static-data-service
+    volumes:
+      - sde_path:/sde
+    ports:
+      - 8084:8084
+    depends_on:
+      postgresdb-static-data:
+        condition: service_healthy
+    environment:
+      SDE_FILE_PATH: /sde/
+      STATIC_DATA_PORT: 8084
+      DATABASE_HOSTNAME: postgresdb-static-data
+      DATABASE_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DATABASE_NAME: market_data
+      ROOT_LOG_LEVEL: INFO
+      APP_LOG_LEVEL: INFO
+      SPRING_LOG_LEVEL: INFO
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8084/getItems/53375" ]
+      interval: 10s
+      timeout: 10s
+      retries: 60
+volumes:
+  static_data_db: {}
+  sde_path: {}

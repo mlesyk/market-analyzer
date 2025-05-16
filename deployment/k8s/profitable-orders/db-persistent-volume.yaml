@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: profitable-orders-db-pv
+spec:
+  claimRef:
+    name: profitable-orders-db-pvc
+    namespace: profitable-orders-ns
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/home/ubuntu/projects/profitable-orders-db"

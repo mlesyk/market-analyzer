@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sde-path-pv
+spec:
+  claimRef:
+    name: sde-path-pvc
+    namespace: static-data-ns
+  storageClassName: manual
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/home/ubuntu/projects/sde-path"

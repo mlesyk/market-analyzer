@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: market-api-reader
+  namespace: market-api-reader-ns
+  labels:
+    app: market-api-reader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: market-api-reader
+  template:
+    metadata:
+      labels:
+        app: market-api-reader
+    spec:
+      nodeSelector:
+        node: "ora4"
+      imagePullSecrets:
+        - name: myregistrykey
+      containers:
+        - name: market-api-reader
+          image: lesykm/market-app:latest
+          command: ["java", "-jar", "/opt/app/market-api-reader.jar"]
+          env:
+            - name: STATIC_DATA_URL
+              value: "http://static-data-service.static-data-ns:8084/"
+            - name: MARKET_API_READER_PORT
+              value: "8081"
+            - name: KAFKA_HOSTNAME
+              value: "kafka-service.kafka-ns.svc.cluster.local"
+            - name: KAFKA_PORT
+              value: "9092"
+            - name: ROOT_LOG_LEVEL
+              value: INFO
+            - name: APP_LOG_LEVEL
+              value: INFO
+            - name: SPRING_LOG_LEVEL
+              value: INFO
+            - name: KAFKA_PRODUCER_POOL_SIZE
+              value: "5"
+            - name: KAFKA_PRODUCER_QUEUE_SIZE
+              value: "500"
+            - name: KAFKA_PRODUCER_CACHE_LIFETIME_MINUTES
+              value: "5"
+            - name: KAFKA_PRODUCER_SCHEDULER_DELAY
+              value: "300000"
+            - name: KAFKA_PRODUCER_SCHEDULER_INITIAL_DELAY
+              value: "5000"
+            - name: KAFKA_PRODUCER_RUN_COUNT
+              value: "0"
+          ports:
+            - name: app-port
+              containerPort: 8081

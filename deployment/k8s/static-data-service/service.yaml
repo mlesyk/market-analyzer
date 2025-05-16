@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: static-data-service
+  namespace: static-data-ns
+  labels:
+    app: static-data
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: 8084
+      port: 8084
+  selector:
+    app: static-data

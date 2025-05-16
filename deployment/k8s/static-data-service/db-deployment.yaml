@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresdb-static-data
+  namespace: static-data-ns
+  labels:
+    app: postgresdb-static-data
+spec:
+  selector:
+    matchLabels:
+      app: postgresdb-static-data
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgresdb-static-data
+    spec:
+      nodeSelector:
+        node: "ora4"
+      containers:
+        - name: postgresdb-static-data
+          image: postgres:16
+          ports:
+            - name: "postgres"
+              containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: market_data
+          volumeMounts:
+            - name: static-data-db
+              mountPath: /var/lib/postgresql/data
+          startupProbe:
+            exec:
+              command:
+                - pg_isready
+                - "-U"
+                - postgres
+            periodSeconds: 10
+            failureThreshold: 10
+      volumes:
+        - name: static-data-db
+          persistentVolumeClaim:
+            claimName: static-data-db-pvc

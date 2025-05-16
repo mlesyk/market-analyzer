@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: static-data-ns
+  labels:
+    app: static-data
+spec: {}
+status: {}

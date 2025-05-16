@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-api-reader-service
+  namespace: market-api-reader-ns
+  labels:
+    app: market-api-reader
+spec:
+  type: ClusterIP
+  ports:
+    - targetPort: 8081
+      port: 8081
+  selector:
+    app: market-api-reader

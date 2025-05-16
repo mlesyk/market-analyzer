@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-analyzer
+  namespace: order-analyzer-ns
+  labels:
+    app: order-analyzer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-analyzer
+  template:
+    metadata:
+      labels:
+        app: order-analyzer
+    spec:
+      nodeSelector:
+        nlb: "yes"
+        ram: "high"
+        node: "ora3"
+      imagePullSecrets:
+        - name: myregistrykey
+      containers:
+        - name: order-analyzer
+          image: lesykm/market-app:latest
+          command: ["java", "-Xmx8G", "-Xlog:gc:/opt/app/gc.log", "-XX:+HeapDumpOnOutOfMemoryError", "-XX:HeapDumpPath=/dumps",
+                    "-Dcom.sun.management.jmxremote",
+                    "-Dcom.sun.management.jmxremote.port=8180",
+                    "-Dcom.sun.management.jmxremote.ssl=false",
+                    "-Dcom.sun.management.jmxremote.authenticate=false",
+                    "-Dcom.sun.management.jmxremote.local.only=false",
+                    "-Dcom.sun.management.jmxremote.rmi.port=8180",
+                    "-Djava.rmi.server.hostname=x.x.x.x",
+                    "-Djava.net.preferIPv4Stack=true",
+                    "-jar", "/opt/app/order-analyzer-service.jar"]
+          env:
+            - name: ORDERS_ANALYZER_PORT
+              value: "8082"
+            - name: KAFKA_HOSTNAME
+              value: "kafka-service.kafka-ns.svc.cluster.local"
+            - name: KAFKA_PORT
+              value: "9092"
+            - name: DATABASE_HOSTNAME
+              value: postgresdb-order-analyzer-service
+            - name: DATABASE_PORT
+              value: "5432"
+            - name: DB_USERNAME
+              value: postgres
+            - name: DB_PASSWORD
+              value: postgres
+            - name: DATABASE_NAME
+              value: market_data
+            - name: ROOT_LOG_LEVEL
+              value: INFO
+            - name: APP_LOG_LEVEL
+              value: INFO
+            - name: SPRING_LOG_LEVEL
+              value: INFO
+          volumeMounts:
+            - name: hdump
+              mountPath: /dumps
+          ports:
+            - name: app-port
+              containerPort: 8082
+            - name: jmx-port
+              containerPort: 8080
+      volumes:
+        - name: hdump
+          hostPath:
+            path: /dumps
+            type: Directory

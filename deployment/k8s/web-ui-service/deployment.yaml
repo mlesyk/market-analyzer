@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-ui
+  namespace: web-ui-ns
+  labels:
+    app: web-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-ui
+  template:
+    metadata:
+      labels:
+        app: web-ui
+    spec:
+      nodeSelector:
+        node: "ora2"
+      imagePullSecrets:
+        - name: myregistrykey
+      containers:
+        - name: web-ui
+          image: lesykm/market-app:latest
+          command: ["java", "-jar", "/opt/app/web-ui-service.jar"]
+          env:
+            - name: ESI_REDIRECT_URL
+              value: "http://mlop.me/login/oauth2/code/eve"
+            - name: ORDERS_DATA_URL
+              value: "http://profitable-orders-service.profitable-orders:8085/"
+            - name: WEB_UI_PORT
+              value: "8083"
+            - name: CLIENT_ID
+              value: ""
+            - name: CLIENT_SECRET
+              value: ""
+            - name: DATABASE_HOSTNAME
+              value: postgresdb-web-ui-service
+            - name: DATABASE_PORT
+              value: "5432"
+            - name: DB_USERNAME
+              value: postgres
+            - name: DB_PASSWORD
+              value: postgres
+            - name: DATABASE_NAME
+              value: market_data
+            - name: ROOT_LOG_LEVEL
+              value: INFO
+            - name: APP_LOG_LEVEL
+              value: INFO
+            - name: SPRING_LOG_LEVEL
+              value: INFO
+          ports:
+            - name: app-port
+              containerPort: 8083

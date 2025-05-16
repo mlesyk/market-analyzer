@@ -1,0 +1,239 @@
+version: '3'
+
+services:
+  zookeeper:
+    image: bitnami/zookeeper:3.9.3
+    container_name: zookeeper-market
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ALLOW_ANONYMOUS_LOGIN: yes
+    ports:
+      - 22181:2181
+  kafka:
+    image: bitnami/kafka:3.9.0
+    container_name: kafka-market
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:29092
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      ALLOW_PLAINTEXT_LISTENER: yes
+  postgresdb-web-ui:
+    image: postgres:16
+    container_name: postgresdb-web-ui
+    ports:
+      - 5432:5432
+    volumes:
+      - web_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: market_data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  postgresdb-profitable-orders:
+    image: postgres:16
+    container_name: postgresdb-profitable-orders
+    ports:
+      - 5432:5432
+    volumes:
+      - profitable_orders_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: market_data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  postgresdb-order-analyzer:
+    image: postgres:16
+    container_name: postgresdb-order-analyzer
+    ports:
+      - 5432:5432
+    volumes:
+      - order_analyzer_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: market_data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  postgresdb-static-data:
+    image: postgres:16
+    container_name: postgresdb-static-data
+    ports:
+      - 5432:5432
+    volumes:
+      - static_data_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: market_data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  profitable-orders-service:
+    image: lesykm/market-app:latest
+    container_name: profitable-orders-service
+    ports:
+      - 8085:8085
+    depends_on:
+      postgresdb-profitable-orders:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      static-data-service:
+        condition: service_healthy
+    environment:
+      STATIC_DATA_URL: http://static-data-service:8084/
+      MARKET_API_READER_URL: http://market-api-reader:8081/
+      PROFITABLE_ORDERS_PORT: 8085
+      DATABASE_HOSTNAME: postgresdb-profitable-orders
+      DATABASE_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DATABASE_NAME: market_data
+      KAFKA_HOSTNAME: kafka
+      KAFKA_PORT: 9092
+      ROOT_LOG_LEVEL: INFO
+      APP_LOG_LEVEL: INFO
+      SPRING_LOG_LEVEL: INFO
+      KAFKA_LOG_LEVEL: INFO
+      KAFKA_CONSUMER_POOL_SIZE: 5
+      KAFKA_CONSUMER_QUEUE_SIZE: 500
+      KAFKA_CLEANER_CACHE_LIFETIME_MINUTES: 5
+      KAFKA_CLEANER_REGISTRY_READ_TIME_SECONDS: 60
+      KAFKA_CLEANER_SCHEDULER_DELAY: 300000
+      KAFKA_CLEANER_SCHEDULER_INITIAL_DELAY: 5000
+      KAFKA_CLEANER_ENABLED: true
+  web-ui-service:
+    image: lesykm/market-app:latest
+    container_name: web-ui-service
+    ports:
+      - 8083:8083
+    depends_on:
+      postgresdb-web-ui:
+        condition: service_healthy
+      profitable-orders-service:
+        condition: service_started
+    environment:
+      WEB_UI_PORT: 8083
+      DATABASE_HOSTNAME: postgresdb-web-ui
+      DATABASE_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DATABASE_NAME: market_data
+      ESI_REDIRECT_URL: http://172.25.141.246:8083/login/oauth2/code/eve
+      ORDERS_DATA_URL: http://profitable-orders-service:8085/
+      ROOT_LOG_LEVEL: INFO
+      APP_LOG_LEVEL: INFO
+      SPRING_LOG_LEVEL: INFO
+    env_file:
+      - ./keys_env
+  order-analyzer-service:
+    image: lesykm/market-app:latest
+    container_name: order-analyzer-service
+    ports:
+      - 8082:8082
+    depends_on:
+      postgresdb-order-analyzer:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    environment:
+      ORDERS_ANALYZER_PORT: 8082
+      DATABASE_HOSTNAME: postgresdb-order-analyzer
+      DATABASE_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DATABASE_NAME: market_data
+      KAFKA_HOSTNAME: kafka
+      KAFKA_PORT: 9092
+      ROOT_LOG_LEVEL: INFO
+      APP_LOG_LEVEL: INFO
+      SPRING_LOG_LEVEL: INFO
+      KAFKA_LOG_LEVEL: INFO
+      KAFKA_CONSUMER_POOL_SIZE: 5
+      KAFKA_CONSUMER_QUEUE_SIZE: 500
+      KAFKA_CLEANER_CACHE_LIFETIME_MINUTES: 5
+      KAFKA_CLEANER_REGISTRY_READ_TIME_SECONDS: 60
+      KAFKA_CLEANER_SCHEDULER_DELAY: 300000
+      KAFKA_CLEANER_SCHEDULER_INITIAL_DELAY: 900000
+      KAFKA_PRODUCER_SCHEDULER_DELAY: 300000
+      KAFKA_PRODUCER_SCHEDULER_INITIAL_DELAY: 5000
+      KAFKA_CLEANER_ENABLED: true
+      KAFKA_PRODUCER_POOL_SIZE: 5
+  market-api-reader:
+    image: lesykm/market-app:latest
+    container_name: market-api-reader
+    ports:
+      - 8081:8081
+    depends_on:
+      kafka:
+        condition: service_started
+      static-data-service:
+        condition: service_healthy
+    environment:
+      STATIC_DATA_URL: http://static-data-service:8084/
+      MARKET_API_READER_PORT: 8081
+      KAFKA_HOSTNAME: kafka
+      KAFKA_PORT: 9092
+      ROOT_LOG_LEVEL: INFO
+      APP_LOG_LEVEL: INFO
+      SPRING_LOG_LEVEL: INFO
+      KAFKA_PRODUCER_POOL_SIZE: 5
+      KAFKA_PRODUCER_QUEUE_SIZE: 500
+      KAFKA_PRODUCER_CACHE_LIFETIME_MINUTES: 5
+      KAFKA_PRODUCER_SCHEDULER_DELAY: 300_000
+      KAFKA_PRODUCER_SCHEDULER_INITIAL_DELAY: 5000
+      KAFKA_PRODUCER_RUN_COUNT: 0
+  static-data-service:
+    image: lesykm/market-app:latest
+    container_name: static-data-service
+    volumes:
+      - sde_path:/sde
+    ports:
+      - 8084:8084
+    depends_on:
+      postgresdb-static-data:
+        condition: service_healthy
+    environment:
+      SDE_FILE_PATH: /sde/
+      STATIC_DATA_PORT: 8084
+      DATABASE_HOSTNAME: postgresdb-static-data
+      DATABASE_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DATABASE_NAME: market_data
+      ROOT_LOG_LEVEL: INFO
+      APP_LOG_LEVEL: INFO
+      SPRING_LOG_LEVEL: INFO
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8084/getItems/53375" ]
+      interval: 10s
+      timeout: 10s
+      retries: 60
+volumes:
+  static_data_db: {}
+  web_db: {}
+  profitable_orders_db: {}
+  sde_path: {}
+  order_analyzer_db: {}

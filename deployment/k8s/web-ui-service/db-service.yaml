@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresdb-web-ui-service
+  namespace: web-ui-ns
+  labels:
+    app: postgresdb-web-ui
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: postgresdb-web-ui

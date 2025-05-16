@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+  postgresdb-web-ui:
+    image: postgres:16
+    container_name: postgresdb-web-ui
+    ports:
+      - 5432:5432
+    volumes:
+      - web_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: market_data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  postgresdb-profitable-orders:
+    image: postgres:16
+    container_name: postgresdb-profitable-orders
+    ports:
+      - 5432:5432
+    volumes:
+      - profitable_orders_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: market_data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  postgresdb-order-analyzer:
+    image: postgres:16
+    container_name: postgresdb-order-analyzer
+    ports:
+      - 5432:5432
+    volumes:
+      - order_analyzer_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: market_data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  postgresdb-static-data:
+    image: postgres:16
+    container_name: postgresdb-static-data
+    ports:
+      - 5432:5432
+    volumes:
+      - static_data_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: market_data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  static_data_db: {}
+  web_db: {}
+  profitable_orders_db: {}
+  order_analyzer_db: {}

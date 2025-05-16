@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: profitable-orders-ns
+  labels:
+    app: profitable-orders
+spec: {}
+status: {}

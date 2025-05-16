@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresdb-profitable-orders
+  namespace: profitable-orders-ns
+  labels:
+    app: postgresdb-profitable-orders
+spec:
+  selector:
+    matchLabels:
+      app: postgresdb-profitable-orders
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgresdb-profitable-orders
+    spec:
+      nodeSelector:
+        node: "ora4"
+      containers:
+        - name: postgresdb-profitable-orders
+          image: postgres:16
+          ports:
+            - name: "postgres"
+              containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: market_data
+          volumeMounts:
+            - name: profitable-orders-db
+              mountPath: /var/lib/postgresql/data
+          startupProbe:
+            exec:
+              command:
+                - pg_isready
+                - "-U"
+                - postgres
+            periodSeconds: 10
+            failureThreshold: 10
+      volumes:
+        - name: profitable-orders-db
+          persistentVolumeClaim:
+            claimName: profitable-orders-db-pvc

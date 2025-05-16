@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresdb-order-analyzer
+  namespace: order-analyzer-ns
+  labels:
+    app: postgresdb-order-analyzer
+spec:
+  selector:
+    matchLabels:
+      app: postgresdb-order-analyzer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgresdb-order-analyzer
+    spec:
+      nodeSelector:
+        node: "ora3"
+      containers:
+        - name: postgresdb-order-analyzer
+          image: postgres:16
+          ports:
+            - name: "postgres"
+              containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: market_data
+          volumeMounts:
+            - name: order-analyzer-db
+              mountPath: /var/lib/postgresql/data
+          startupProbe:
+            exec:
+              command:
+                - pg_isready
+                - "-U"
+                - postgres
+            periodSeconds: 10
+            failureThreshold: 10
+      volumes:
+        - name: order-analyzer-db
+          persistentVolumeClaim:
+            claimName: order-analyzer-db-pvc

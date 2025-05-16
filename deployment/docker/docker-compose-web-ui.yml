@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  postgresdb-web-ui:
+    image: postgres:16
+    container_name: postgresdb-web-ui
+    ports:
+      - 5432:5432
+    volumes:
+      - web_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: market_data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  web-ui-service:
+    image: lesykm/market-app:latest
+    container_name: web-ui-service
+    ports:
+      - 8083:8083
+    depends_on:
+      postgresdb-web-ui:
+        condition: service_healthy
+      profitable-orders-service:
+        condition: service_started
+    environment:
+      WEB_UI_PORT: 8083
+      DATABASE_HOSTNAME: postgresdb-web-ui
+      DATABASE_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DATABASE_NAME: market_data
+      ESI_REDIRECT_URL: http://172.25.141.246:8083/login/oauth2/code/eve
+      ORDERS_DATA_URL: http://profitable-orders-service:8085/
+      ROOT_LOG_LEVEL: INFO
+      APP_LOG_LEVEL: INFO
+      SPRING_LOG_LEVEL: INFO
+    env_file:
+      - ./keys_env
+volumes:
+  web_db: {}

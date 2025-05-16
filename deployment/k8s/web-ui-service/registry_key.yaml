@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: myregistrykey
+  namespace: web-ui-ns
+data:
+  .dockerconfigjson: <replace with 'cat .docker/config | base64'>
+type: kubernetes.io/dockerconfigjson
