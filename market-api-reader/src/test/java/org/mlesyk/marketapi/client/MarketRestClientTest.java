@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {MarketRestClient.class, RestTemplate.class, RetryableRequestHandler.class})
+@ContextConfiguration(classes = {MarketRestClient.class, RestTemplate.class})
 @TestPropertySource(locations = "classpath:application-test.properties")
 class MarketRestClientTest {
 

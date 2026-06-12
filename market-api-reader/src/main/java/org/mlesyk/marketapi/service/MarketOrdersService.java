@@ -11,7 +11,6 @@ import org.mlesyk.marketapi.util.RouteRestQueryBuilder;
 import org.mlesyk.marketapi.util.parameters.RouteType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.*;
@@ -33,29 +32,34 @@ public class MarketOrdersService {
     ExecutorService httpExecutor = Executors.newFixedThreadPool(10);
 
     public Set<MarketOrder> getOrdersByRegionId(Integer regionId) {
-        Set<MarketOrder> orders = new HashSet<>();
+        Set<Integer> allItemIds = staticDataServiceRestClient.getAllItemIds();
 
-        CompletionService<Set<MarketOrder>> completionService = new ExecutorCompletionService<>(httpExecutor);
-        List<Callable<Set<MarketOrder>>> tasks = new ArrayList<>();
-        Integer regionOrdersMaxPage = findRegionOrderPagesAmount(10, 10, regionId);
-        for (int i = 1; i <= regionOrdersMaxPage; i += 10) {
-            int startPage = i;
-            Callable<Set<MarketOrder>> callableObj = () -> readOrderPagesFromRegion(regionId, startPage, startPage + 10);
-            tasks.add(callableObj);
+        MarketRestClient.OrdersPage firstPage = marketRestClient.getRegionOrdersPage(
+                OrdersRestQueryBuilder.getInstance().setRegionId(regionId).setPage(1).build());
+        int totalPages = firstPage.totalPages();
+        log.debug("Region {} has {} pages of orders", regionId, totalPages);
+
+        Set<MarketOrder> orders = new HashSet<>(filterByKnownTypes(firstPage.orders(), allItemIds));
+
+        if (totalPages <= 1) {
+            log.info("Finished reading orders of region {}, found {} orders, number of pages = {}", regionId, orders.size(), totalPages);
+            return orders;
         }
-        for (Callable<Set<MarketOrder>> callable : tasks) {
-            completionService.submit(callable);
+
+        CompletionService<List<MarketOrder>> completionService = new ExecutorCompletionService<>(httpExecutor);
+        for (int page = 2; page <= totalPages; page++) {
+            int pageToFetch = page;
+            completionService.submit(() -> readSingleOrderPage(regionId, pageToFetch, allItemIds));
         }
-        log.debug("Region {} scheduled read of {} pages", regionId, regionOrdersMaxPage);
-        for (int t = 0, n = tasks.size(); t < n; t++) {
+        for (int i = 2; i <= totalPages; i++) {
             try {
-                Future<Set<MarketOrder>> f = completionService.take();
-                orders.addAll(f.get());
+                orders.addAll(completionService.take().get());
             } catch (InterruptedException | ExecutionException e) {
                 Thread.currentThread().interrupt();
                 log.error("Thread interrupted while waiting", e);
             }
         }
+        log.info("Finished reading orders of region {}, found {} orders, number of pages = {}", regionId, orders.size(), totalPages);
         return orders;
     }
 
@@ -98,65 +102,22 @@ public class MarketOrdersService {
         return marketRestClient.calculateRouteBetweenSystems(webParams);
     }
 
-    public Set<MarketOrder> readOrderPagesFromRegion(Integer regionId, int startPage, int lastPage) {
-        Set<MarketOrder> orders = new HashSet<>();
-        Set<Integer> allItemIds = staticDataServiceRestClient.getAllItemIds();
-        int page = startPage;
-        while (page <= lastPage) {
-            OrdersRestQueryBuilder regionOrderQueryBuilder = OrdersRestQueryBuilder.getInstance().setRegionId(regionId).setPage(page);
-            List<MarketOrder> regionOrders = new ArrayList<>(marketRestClient.getRegionOrderInfoList(regionOrderQueryBuilder.build()));
-            log.debug("Read finished of orders page {} of region {}, found {} orders", page, regionId, regionOrders.size());
-            if(regionOrders.isEmpty()) {
-                break;
-            }
-            Iterator<MarketOrder> iterator = regionOrders.iterator();
-            while (iterator.hasNext()) {
-                MarketOrder order = iterator.next();
-                boolean typeIsCorrect = allItemIds.contains(order.getTypeId());
-                if (!typeIsCorrect) {
-                    log.debug("Order has unknown type id, possibly item from server Serenity: {}", order);
-                    iterator.remove();
-                }
-            }
-            orders.addAll(regionOrders);
-            page++;
-        }
-        log.info("Finished reading orders of region {}, found {} orders, number of pages = {}", regionId, orders.size(), page);
-        return orders;
+    private List<MarketOrder> readSingleOrderPage(Integer regionId, int page, Set<Integer> allItemIds) {
+        List<MarketOrder> regionOrders = marketRestClient.getRegionOrderInfoList(
+                OrdersRestQueryBuilder.getInstance().setRegionId(regionId).setPage(page).build());
+        log.debug("Read finished of orders page {} of region {}, found {} orders", page, regionId, regionOrders.size());
+        return filterByKnownTypes(regionOrders, allItemIds);
     }
 
-    /**
-     * Finds the total number of pages of market orders for a given region.
-     * This method uses a recursive approach to determine the number of pages by
-     * querying the market orders and adjusting the page and step values based on
-     * the presence or absence of orders.
-     *
-     * @param page the current page number to query
-     * @param step the step size to adjust the page number
-     * @param regionId the ID of the region to query
-     * @return the total number of pages of market orders for the given region
-     */
-    public Integer findRegionOrderPagesAmount(Integer page, Integer step, Integer regionId) {
-        if (step < 10) {
-            return page + step;
-        }
-        OrdersRestQueryBuilder regionOrderQueryBuilder = OrdersRestQueryBuilder.getInstance().setRegionId(regionId).setPage(page);
-        List<MarketOrder> orders = marketRestClient.getRegionOrderInfoList(regionOrderQueryBuilder.build());
-        if (orders.isEmpty()) {
-            if (page.equals(step)) {
-                if (page.equals(10)) {
-                    return page;
-                }
-                return findRegionOrderPagesAmount(page - step / 4, step / 4, regionId);
+    private List<MarketOrder> filterByKnownTypes(List<MarketOrder> orders, Set<Integer> allItemIds) {
+        List<MarketOrder> filtered = new ArrayList<>(orders.size());
+        for (MarketOrder order : orders) {
+            if (allItemIds.contains(order.getTypeId())) {
+                filtered.add(order);
             } else {
-                return findRegionOrderPagesAmount(page - step / 2, step / 2, regionId);
-            }
-        } else {
-            if (page.equals(step)) {
-                return findRegionOrderPagesAmount(page + step, step * 2, regionId);
-            } else {
-                return findRegionOrderPagesAmount(page + step / 2, step / 2, regionId);
+                log.debug("Order has unknown type id, possibly item from server Serenity: {}", order);
             }
         }
+        return filtered;
     }
 }

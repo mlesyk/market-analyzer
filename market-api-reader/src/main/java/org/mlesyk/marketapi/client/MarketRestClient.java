@@ -6,8 +6,9 @@ import org.mlesyk.marketapi.model.MarketOrderStatistics;
 import org.mlesyk.marketapi.model.Region;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
@@ -15,6 +16,10 @@ import java.util.*;
 @Slf4j
 @Component
 public class MarketRestClient {
+
+    public static final String X_PAGES_HEADER = "X-Pages";
+
+    public record OrdersPage(List<MarketOrder> orders, int totalPages) {}
 
     @Value("${app.market.api.url}")
     private String apiURL;
@@ -38,12 +43,10 @@ public class MarketRestClient {
     private String routeCalculatorPath;
 
     private final RestTemplate restTemplate;
-    private final RetryableRequestHandler retryableRequestHandler;
 
     @Autowired
-    public MarketRestClient(RestTemplate restTemplate, RetryableRequestHandler retryableRequestHandler) {
+    public MarketRestClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.retryableRequestHandler = retryableRequestHandler;
     }
 
     public Integer[] getTypeIdListByRegion(Integer regionId, Integer page) {
@@ -59,15 +62,21 @@ public class MarketRestClient {
 
     public List<MarketOrder> getRegionOrderInfoList(Map<String, Object> params) {
         Integer regionId = (Integer) params.get("region_id_path_param");
-        MarketOrder[] marketRegionOrders = retryableRequestHandler.getWithRetry(applyQueryParameters(apiURL + orderListByRegionPath, params), MarketOrder[].class, params);
-        if(marketRegionOrders != null && marketRegionOrders.length > 0) {
-            for (MarketOrder order : marketRegionOrders) {
-                order.setRegionId(regionId);
-                order.setOrderValue(order.getPrice() * order.getVolumeRemain());
-            }
-            return Arrays.asList(marketRegionOrders);
+        MarketOrder[] marketRegionOrders = restTemplate.getForObject(
+                applyQueryParameters(apiURL + orderListByRegionPath, params), MarketOrder[].class, params);
+        return enrichOrders(marketRegionOrders, regionId);
+    }
+
+    public OrdersPage getRegionOrdersPage(Map<String, Object> params) {
+        Integer regionId = (Integer) params.get("region_id_path_param");
+        ResponseEntity<MarketOrder[]> response = restTemplate.getForEntity(
+                applyQueryParameters(apiURL + orderListByRegionPath, params), MarketOrder[].class, params);
+        int totalPages = 1;
+        String pagesHeader = response.getHeaders().getFirst(X_PAGES_HEADER);
+        if (pagesHeader != null) {
+            totalPages = Integer.parseInt(pagesHeader);
         }
-        return Collections.emptyList();
+        return new OrdersPage(enrichOrders(response.getBody(), regionId), totalPages);
     }
 
     public List<MarketOrderStatistics> getMarketRegionOrderStatisticsInfoList(Integer regionId, Integer typeId) {
@@ -91,8 +100,20 @@ public class MarketRestClient {
     }
 
     public List<Integer> calculateRouteBetweenSystems(Map<String, Object> params) {
-        Integer[] routeBetweenSystems = retryableRequestHandler.getWithRetry(applyQueryParameters(apiURL + routeCalculatorPath, params), Integer[].class, params);
+        Integer[] routeBetweenSystems = restTemplate.getForObject(
+                applyQueryParameters(apiURL + routeCalculatorPath, params), Integer[].class, params);
         return routeBetweenSystems != null ? Arrays.asList(routeBetweenSystems) : Collections.emptyList();
+    }
+
+    private List<MarketOrder> enrichOrders(MarketOrder[] orders, Integer regionId) {
+        if (orders == null || orders.length == 0) {
+            return Collections.emptyList();
+        }
+        for (MarketOrder order : orders) {
+            order.setRegionId(regionId);
+            order.setOrderValue(order.getPrice() * order.getVolumeRemain());
+        }
+        return Arrays.asList(orders);
     }
 
     private String applyQueryParameters(String url, Map<String, Object> params) {
