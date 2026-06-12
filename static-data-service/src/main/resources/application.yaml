@@ -22,9 +22,9 @@ app:
   snakeyaml:
     maxYamlCodePoints: 1_000_000_000
   sde:
-    file_name: sde.zip
+    file_name: yaml.zip
     file_path: ${SDE_FILE_PATH:./}
-    resources_url: https://developers.eveonline.com/docs/services/sde/
+    resources_url: https://developers.eveonline.com/static-data/
     checksum_name: sde-checksum
     type_id_filename: types.yaml
     market_groups_filename: marketGroups.yaml
